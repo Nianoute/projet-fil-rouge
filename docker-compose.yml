@@ -1,10 +1,20 @@
 services:
-  mongo:
-    image: mongo
-    container_name: mongo_betgame
-    ports:
-      - ${MONGO_PORT}:27017
+  postgres:
+    image: postgres
+    container_name: postgres
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    restart: always
+  adminer:
+    container_name: adminer
+    environment:
+      ADMINER_DESIGN: pepa-linha
+      ADMINER_DEFAULT_SERVER: postgres
+    image: adminer
+    ports:
+      - "8080:8080"
+    restart: always
