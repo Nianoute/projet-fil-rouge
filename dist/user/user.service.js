@@ -25,6 +25,18 @@ let UserService = class UserService {
         const users = this.userRepository.find();
         return users;
     }
+    findOne(id) {
+        return this.userRepository.findOneBy({ id });
+    }
+    delete(id) {
+        return this.userRepository.softDelete(id);
+    }
+    update(id, user) {
+        return this.userRepository.update(id, user);
+    }
+    create(user) {
+        return this.userRepository.save(user);
+    }
 };
 UserService = __decorate([
     (0, common_1.Injectable)(),

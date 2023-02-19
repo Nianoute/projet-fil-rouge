@@ -14,4 +14,20 @@ export class UserService {
         const users = this.userRepository.find();
         return users;
     }
+
+    findOne(id: number) {
+        return this.userRepository.findOneBy({id});
+    }
+
+    delete(id: number) {
+        return this.userRepository.softDelete(id);
+    }
+
+    update(id: number, user) {
+        return this.userRepository.update(id, user);
+    }
+
+    create(user) {
+        return this.userRepository.save(user);
+    }
 }
