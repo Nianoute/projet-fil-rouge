@@ -1,7 +1,10 @@
 import { CreateDateColumn, DeleteDateColumn, UpdateDateColumn } from 'typeorm';
 
 export class TimestampEntity {
-    @CreateDateColumn()
+    @CreateDateColumn({
+        type: 'timestamp',
+        default: () => 'NOW()',
+    })
     createdAt: Date;
 
     @UpdateDateColumn()

@@ -7,5 +7,15 @@ export class UserEntity extends TimestampEntity{
     id: number;
 
     @Column()
-    title: string;
+    password: string;
+
+    @Column({
+        unique: true,
+    })
+    email: string;
+
+    @Column({
+        unique: true,
+    })
+    userName: string;
 }
