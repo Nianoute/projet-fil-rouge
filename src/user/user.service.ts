@@ -19,7 +19,7 @@ export class UserService {
         return this.userRepository.findOneBy({id});
     }
 
-    delete(id: number) {
+    softDelete(id: number) {
         return this.userRepository.softDelete(id);
     }
 
