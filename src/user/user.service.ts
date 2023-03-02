@@ -13,9 +13,8 @@ export class UserService {
         private userRepository: Repository<UserEntity>,
     ) {}
 
-    async findAll() {
-        const users = this.userRepository.find();
-        return users;
+    async findAll() { 
+        return await this.userRepository.find();
     }
 
     async findOne(id: number) {
