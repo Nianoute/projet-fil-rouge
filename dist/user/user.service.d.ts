@@ -18,4 +18,5 @@ export declare class UserService {
         deletedAt: Date;
     }>;
     create(createUserDto: CreateUserDto): Promise<CreateUserDto & UserEntity>;
+    findOneByEmail(email: string): Promise<UserEntity>;
 }

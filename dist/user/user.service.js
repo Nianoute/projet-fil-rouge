@@ -47,6 +47,9 @@ let UserService = class UserService {
             throw new Error('Error while creating user');
         }
     }
+    async findOneByEmail(email) {
+        return await this.userRepository.findOneBy({ email });
+    }
 };
 UserService = __decorate([
     (0, common_1.Injectable)(),

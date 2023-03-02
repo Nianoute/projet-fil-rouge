@@ -42,4 +42,8 @@ export class UserService {
           throw new Error('Error while creating user');
         }
       }
+
+    async findOneByEmail(email: string) : Promise<UserEntity> {
+        return await this.userRepository.findOneBy({ email })
+    }
 }
