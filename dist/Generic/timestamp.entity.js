@@ -14,7 +14,10 @@ const typeorm_1 = require("typeorm");
 class TimestampEntity {
 }
 __decorate([
-    (0, typeorm_1.CreateDateColumn)(),
+    (0, typeorm_1.CreateDateColumn)({
+        type: 'timestamp',
+        default: () => 'NOW()',
+    }),
     __metadata("design:type", Date)
 ], TimestampEntity.prototype, "createdAt", void 0);
 __decorate([

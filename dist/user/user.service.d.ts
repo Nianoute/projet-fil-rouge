@@ -1,11 +1,21 @@
 import { Repository } from 'typeorm';
-import { UserEntity } from './user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UserEntity } from './entities/user.entity';
+import { UpdateUserDto } from './dto/update-user.dto';
 export declare class UserService {
     private userRepository;
     constructor(userRepository: Repository<UserEntity>);
     findAll(): Promise<UserEntity[]>;
     findOne(id: number): Promise<UserEntity>;
-    delete(id: number): Promise<import("typeorm").UpdateResult>;
-    update(id: number, user: any): Promise<import("typeorm").UpdateResult>;
-    create(user: any): Promise<any>;
+    softDelete(id: number): Promise<import("typeorm").UpdateResult>;
+    update(id: number, data: UpdateUserDto): Promise<{
+        password: string;
+        email: string;
+        userName: string;
+        id: number;
+        createdAt: Date;
+        updatedAt: Date;
+        deletedAt: Date;
+    }>;
+    create(createUserDto: CreateUserDto): Promise<CreateUserDto & UserEntity>;
 }

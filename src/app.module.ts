@@ -3,9 +3,12 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
+import { ConfigModule } from '@nestjs/config';
+import { GameModule } from './game/game.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.POSTGRES_HOST,
@@ -17,7 +20,8 @@ import { UserModule } from './user/user.module';
       synchronize: true,
       autoLoadEntities: true,
     }),
-    UserModule
+    UserModule,
+    GameModule
   ],
   controllers: [AppController],
   providers: [AppService],

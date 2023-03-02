@@ -16,26 +16,37 @@ exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
-const user_entity_1 = require("./user.entity");
+const user_entity_1 = require("./entities/user.entity");
+const bcrypt = require("bcrypt");
 let UserService = class UserService {
     constructor(userRepository) {
         this.userRepository = userRepository;
     }
-    findAll() {
+    async findAll() {
         const users = this.userRepository.find();
         return users;
     }
-    findOne(id) {
-        return this.userRepository.findOneBy({ id });
+    async findOne(id) {
+        return await this.userRepository.findOneBy({ id });
     }
-    delete(id) {
-        return this.userRepository.softDelete(id);
+    async softDelete(id) {
+        return await this.userRepository.softDelete(id);
     }
-    update(id, user) {
-        return this.userRepository.update(id, user);
+    async update(id, data) {
+        const user = await this.userRepository.findOneBy({ id });
+        const userUpdate = Object.assign(Object.assign({}, user), data);
+        await this.userRepository.save(userUpdate);
+        return userUpdate;
     }
-    create(user) {
-        return this.userRepository.save(user);
+    async create(createUserDto) {
+        try {
+            createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
+            return await this.userRepository.save(createUserDto);
+        }
+        catch (error) {
+            console.log(error);
+            throw new Error('Error while creating user');
+        }
     }
 };
 UserService = __decorate([
