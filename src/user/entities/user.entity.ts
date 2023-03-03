@@ -20,6 +20,6 @@ export class UserEntity extends TimestampEntity{
     })
     userName: string;
 
-    // @OneToMany(() => PostEntity, post => post.author)
-    // posts: PostEntity[];
+    @OneToMany(() => PostEntity, post => post.author)
+    posts: PostEntity[];
 }

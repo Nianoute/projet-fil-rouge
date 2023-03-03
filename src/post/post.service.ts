@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostEntity } from './entities/post.entity';
 
@@ -12,18 +11,29 @@ export class PostService {
     private readonly postRepository: Repository<PostEntity>
 ) {}
 
-  async create(data: CreatePostDto) {
+  async create(data) {
     try {
-      return await this.postRepository.save(data);
-  } catch (error) {
-      console.log(error);
-      throw new Error('Error while creating post');
-  }
+        return await this.postRepository.save(data);
+    } catch (error) {
+        console.log(error);
+        throw new Error('Error while creating post');
+    }
   }
 
   async findAll() {
+
+    const query = await this.postRepository
+        .createQueryBuilder('post')
+        .leftJoinAndSelect('post.categories', 'categories')
+        .leftJoinAndSelect('post.author', 'author')
+        .orderBy('post.createdAt', 'DESC')
+
+    const postList = query
+                        .getMany();
+
+    
     try {
-      return await this.postRepository.find();
+      return postList;
   } catch (error) {
       console.log(error);
       throw new Error('Error while creating post');

@@ -13,6 +13,7 @@ export declare class UserService {
         email: string;
         userName: string;
         id: number;
+        posts: import("../post/entities/post.entity").PostEntity[];
         createdAt: Date;
         updatedAt: Date;
         deletedAt: Date;
