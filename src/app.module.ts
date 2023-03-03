@@ -4,9 +4,8 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
-import { GameModule } from './game/game.module';
 import { AuthModule } from './auth/auth.module';
-import { BoxModule } from './box/box.module';
+import { PostModule } from './post/post.module';
 
 @Module({
   imports: [
@@ -23,9 +22,8 @@ import { BoxModule } from './box/box.module';
       autoLoadEntities: true,
     }),
     UserModule,
-    GameModule,
     AuthModule,
-    BoxModule
+    PostModule
   ],
   controllers: [AppController],
   providers: [AppService],

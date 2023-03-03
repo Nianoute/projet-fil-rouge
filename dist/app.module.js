@@ -13,9 +13,8 @@ const app_service_1 = require("./app.service");
 const typeorm_1 = require("@nestjs/typeorm");
 const user_module_1 = require("./user/user.module");
 const config_1 = require("@nestjs/config");
-const game_module_1 = require("./game/game.module");
 const auth_module_1 = require("./auth/auth.module");
-const box_module_1 = require("./box/box.module");
+const post_module_1 = require("./post/post.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -34,9 +33,8 @@ AppModule = __decorate([
                 autoLoadEntities: true,
             }),
             user_module_1.UserModule,
-            game_module_1.GameModule,
             auth_module_1.AuthModule,
-            box_module_1.BoxModule
+            post_module_1.PostModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
