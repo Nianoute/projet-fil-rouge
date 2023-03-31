@@ -20,15 +20,23 @@ export class PostService {
     }
   }
 
-  async findAll() {
+  async findAll(queries) {
+    let { categories } = queries;
 
     const query = await this.postRepository
         .createQueryBuilder('post')
         .leftJoinAndSelect('post.categories', 'categories')
         .leftJoinAndSelect('post.author', 'author')
-        .orderBy('post.createdAt', 'DESC')
+
+
+    if(categories !== undefined && categories !== "") {
+      query
+          .where('categories.name IN (:...categories)', { categories: categories.split(',') })
+    }
+
 
     const postList = query
+                        .orderBy('post.createdAt', 'DESC')
                         .getMany();
 
     

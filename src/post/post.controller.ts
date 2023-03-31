@@ -14,8 +14,10 @@ export class PostController {
   }
 
   @Get()
-  findAll() {
-    return this.postService.findAll();
+  findAll(
+    @Query() queries
+  ) {
+    return this.postService.findAll(queries);
   }
 
   @Get(':id')
