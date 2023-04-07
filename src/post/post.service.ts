@@ -21,7 +21,7 @@ export class PostService {
   }
 
   async findAll(queries) {
-    let { categories } = queries;
+    let { categories} = queries;
 
     const query = await this.postRepository
         .createQueryBuilder('post')
@@ -31,7 +31,7 @@ export class PostService {
 
     if(categories !== undefined && categories !== "") {
       query
-          .where('categories.name IN (:...categories)', { categories: categories.split(',') })
+          .where('categories.name IN (:...categories)', { categories: categories.split(',')})
     }
 
 
