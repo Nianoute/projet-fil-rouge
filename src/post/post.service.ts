@@ -21,7 +21,7 @@ export class PostService {
   }
 
   async findAll(queries) {
-    let { categories} = queries;
+    let { categories, title } = queries;
 
     const query = await this.postRepository
         .createQueryBuilder('post')
@@ -34,10 +34,16 @@ export class PostService {
           .where('categories.name IN (:...categories)', { categories: categories.split(',')})
     }
 
+    if(title !== undefined && title !== "") {
+      query
+          .andWhere('post.title like :title', {title: '%' + title + '%' })
+    }
+
 
     const postList = query
                         .orderBy('post.createdAt', 'DESC')
                         .getMany();
+    console.log(title)
 
     
     try {
