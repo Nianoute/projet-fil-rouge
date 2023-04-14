@@ -7,18 +7,29 @@ export class UserEntity extends TimestampEntity{
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({
+        nullable: false
+    })
     password: string;
 
     @Column({
         unique: true,
+        nullable: false
+
     })
     email: string;
 
     @Column({
         unique: true,
+        nullable: false
+
     })
     userName: string;
+
+    @Column({
+        nullable: true,
+    })
+    admin: boolean;
 
     @OneToMany(() => PostEntity, post => post.author)
     posts: PostEntity[];

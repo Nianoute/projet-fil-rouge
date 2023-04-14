@@ -12,12 +12,13 @@ export declare class UserService {
         password: string;
         email: string;
         userName: string;
+        admin: boolean;
         id: number;
         posts: import("../post/entities/post.entity").PostEntity[];
         createdAt: Date;
         updatedAt: Date;
         deletedAt: Date;
     }>;
-    create(createUserDto: CreateUserDto): Promise<CreateUserDto & UserEntity>;
+    create(data: CreateUserDto): Promise<"Pour votre sécurité, mettez un mot de passe supérieur à 8 caractère" | (CreateUserDto & UserEntity)>;
     findOneByEmail(email: string): Promise<UserEntity>;
 }

@@ -13,7 +13,33 @@ export class PostService {
 
   async create(data) {
     try {
-        return await this.postRepository.save(data);
+        let error = false
+        if (data.place){
+          data.webSite = "";
+        } else {
+          const https = data.webSite.substring(0, 8);
+          if (https != "https://"){
+            error = true;
+            const errorMessage = "Le website doit etre un site sécurisé !!!!!!";  
+            return errorMessage;
+          }
+        }
+
+        if (data.priceInit) {
+          if(data.priceInit <= data.priceNow){
+            data.priceNow = null
+            error = true;
+            const errorMessage = "Le prix initial doit etre supérieur au prix de maintenant, sinon ce n'est pas un bon plan";  
+            return errorMessage;
+          }
+        }
+
+        if (!error){
+          return await this.postRepository.save(data);
+        } else {
+          throw new Error('Error while creating post');
+        }
+
     } catch (error) {
         console.log(error);
         throw new Error('Error while creating post');
@@ -43,7 +69,6 @@ export class PostService {
     const postList = query
                         .orderBy('post.createdAt', 'DESC')
                         .getMany();
-    console.log(title)
 
     
     try {

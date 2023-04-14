@@ -33,10 +33,29 @@ export class UserService {
         return userUpdate;
     }
 
-    async create(createUserDto: CreateUserDto) {
+    async create(data: CreateUserDto) {
         try {
-          createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
-          return await this.userRepository.save(createUserDto);
+            let error = false;
+
+            const passwordLenght = data.password.length;
+            if (passwordLenght < 8) {
+                error = true;
+                const errorMessage = "Pour votre sécurité, mettez un mot de passe supérieur à 8 caractère";
+                return errorMessage
+            } else {
+                data.password = await bcrypt.hash(data.password, 10);
+            }
+
+            if (data.admin == null) {
+                data.admin = false
+            }
+
+            if (!error){
+              return await this.userRepository.save(data);
+            } else {
+                throw new Error('Error while creating user');
+            }
+
         } catch (error) {
           console.log(error);
           throw new Error('Error while creating user');
