@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserEntity } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { UpdateUserDto } from './dto/update-user.dto';
+const salt = 10;
 
 @Injectable()
 export class UserService {
@@ -26,8 +27,12 @@ export class UserService {
     }
 
     async update(id: number, data: UpdateUserDto) {
-        const user = await this.userRepository.findOneBy({ id });
+        const user = await this.findOneByEmail(data.email);
+        if (!user) {
+            throw new NotFoundException(`User ${data.email} not found`);
+          }
         const userUpdate = { ...user, ...data };
+        userUpdate.password = await bcrypt.hash(userUpdate.password, salt)
         await this.userRepository.save(userUpdate);
 
         return userUpdate;
@@ -43,7 +48,7 @@ export class UserService {
                 const errorMessage = "Pour votre sécurité, mettez un mot de passe supérieur à 8 caractère";
                 return errorMessage
             } else {
-                data.password = await bcrypt.hash(data.password, 10);
+                data.password = await bcrypt.hash(data.password, salt);
             }
 
             if (data.admin == null) {

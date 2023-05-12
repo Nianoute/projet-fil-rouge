@@ -18,6 +18,7 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const user_entity_1 = require("./entities/user.entity");
 const bcrypt = require("bcrypt");
+const salt = 10;
 let UserService = class UserService {
     constructor(userRepository) {
         this.userRepository = userRepository;
@@ -32,8 +33,12 @@ let UserService = class UserService {
         return await this.userRepository.softDelete(id);
     }
     async update(id, data) {
-        const user = await this.userRepository.findOneBy({ id });
+        const user = await this.findOneByEmail(data.email);
+        if (!user) {
+            throw new common_1.NotFoundException(`User ${data.email} not found`);
+        }
         const userUpdate = Object.assign(Object.assign({}, user), data);
+        userUpdate.password = await bcrypt.hash(userUpdate.password, salt);
         await this.userRepository.save(userUpdate);
         return userUpdate;
     }
@@ -47,7 +52,7 @@ let UserService = class UserService {
                 return errorMessage;
             }
             else {
-                data.password = await bcrypt.hash(data.password, 10);
+                data.password = await bcrypt.hash(data.password, salt);
             }
             if (data.admin == null) {
                 data.admin = false;

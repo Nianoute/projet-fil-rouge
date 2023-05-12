@@ -7,7 +7,7 @@ export declare class UserController {
     create(createUserDto: CreateUserDto): Promise<"Pour votre sécurité, mettez un mot de passe supérieur à 8 caractère" | (CreateUserDto & import("./entities/user.entity").UserEntity)>;
     findAll(): Promise<import("./entities/user.entity").UserEntity[]>;
     findOne(id: number): Promise<import("./entities/user.entity").UserEntity>;
-    update(id: number, updateUserDto: UpdateUserDto): Promise<{
+    update(id: string, updateUserDto: UpdateUserDto): Promise<{
         password: string;
         email: string;
         userName: string;

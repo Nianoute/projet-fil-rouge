@@ -16,6 +16,8 @@ const config_1 = require("@nestjs/config");
 const auth_module_1 = require("./auth/auth.module");
 const post_module_1 = require("./post/post.module");
 const category_module_1 = require("./category/category.module");
+const mail_module_1 = require("./mail/mail.module");
+const token_reset_password_module_1 = require("./token-reset-password/token-reset-password.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -36,7 +38,9 @@ AppModule = __decorate([
             user_module_1.UserModule,
             auth_module_1.AuthModule,
             post_module_1.PostModule,
-            category_module_1.CategoryModule
+            category_module_1.CategoryModule,
+            mail_module_1.MailModule,
+            token_reset_password_module_1.TokenResetPasswordModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

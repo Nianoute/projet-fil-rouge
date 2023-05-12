@@ -89,11 +89,15 @@ export class PostService {
   }
 
   async update(id: number, data: UpdatePostDto) {
-    const post = await this.postRepository.findOneBy({ id });
-    const postUpdate = { ...post, ...data };
-    await this.postRepository.save(postUpdate);
-
-    return postUpdate;
+    try {
+      const post = await this.postRepository.findOneBy({ id });
+      const postUpdate = { ...post, ...data };
+      await this.postRepository.save(postUpdate);
+  
+      return postUpdate;    
+    } catch (error) {
+      
+    }
   }
 
   async softDelete(id: number) {

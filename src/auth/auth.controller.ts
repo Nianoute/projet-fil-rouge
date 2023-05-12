@@ -2,6 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { AuthService } from './auth.service';
 import { SigninAuthDto } from './dto/signin-auth.dto';
 import { SignupAuthDto } from './dto/Signup-auth.dto';
+import { CreateTokenResetPasswordDto } from 'src/token-reset-password/dto/create-token-reset-password.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -16,4 +18,19 @@ export class AuthController {
   signin(@Body() signinAuthDto: SigninAuthDto) {
     return this.authService.signin(signinAuthDto);
   }
+
+  @Post('forgot-password')
+  async forgotPassword(
+    @Body() createTokenResetPasswordDto: CreateTokenResetPasswordDto,
+  ) {
+    return this.authService.forgotPassword(createTokenResetPasswordDto);
+  }
+
+  // @Post('reset-password/:token')
+  // async resetPassword(
+  //   @Param('token') token: string,
+  //   @Body() resetPasswordDto: ResetPasswordDto,
+  // ) {
+  //   return this.authService.resetPassword(token, resetPasswordDto);
+  // }
 }
