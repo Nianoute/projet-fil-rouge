@@ -64,27 +64,29 @@ async forgotPassword(
   return `An email has been sent to ${createTokenResetPasswordDto.email}`;
 }
 
-// async resetPassword(token: string, resetPasswordDto: ResetPasswordDto) {
-//   const findToken = await this.tokenResetPasswordService.findOne(token);
+async resetPassword(token: string, data: ResetPasswordDto) {
+  const findToken = await this.tokenResetPasswordService.findOne(token);
 
-//   if (!findToken) {
-//     throw new HttpException('Token not found', 400);
-//   }
+  if (!findToken) {
+    throw new HttpException('Token not found', 400);
+  }
 
-//   const user = await this.usersService.findOneByEmail(findToken.user.email);
+  const user = await this.userService.findOneByEmail(findToken.user.email);
 
-//   if (!user) {
-//     throw new HttpException('User not found', 400);
-//   }
+  if (!user) {
+    throw new HttpException('User not found', 400);
+  }
 
-//   const updatedUser = await this.usersService.updatePassword(
-//     resetPasswordDto.password,
-//     user,
-//   );
 
-//   await this.tokenResetPasswordService.remove(findToken.id);
+  user.password = data.password;
+  const updatedUser = await this.userService.update(
+    +data.password,
+    user,
+  );
+
+  await this.tokenResetPasswordService.remove(findToken.id);
     
-//   return updatedUser;
-// }
+  return updatedUser;
+}
 
 }

@@ -32,7 +32,7 @@ export class UserService {
             throw new NotFoundException(`User ${data.email} not found`);
           }
         const userUpdate = { ...user, ...data };
-        userUpdate.password = await bcrypt.hash(userUpdate.password, salt)
+        userUpdate.password = await bcrypt.hash(userUpdate.password, salt);
         await this.userRepository.save(userUpdate);
 
         return userUpdate;

@@ -26,11 +26,11 @@ export class AuthController {
     return this.authService.forgotPassword(createTokenResetPasswordDto);
   }
 
-  // @Post('reset-password/:token')
-  // async resetPassword(
-  //   @Param('token') token: string,
-  //   @Body() resetPasswordDto: ResetPasswordDto,
-  // ) {
-  //   return this.authService.resetPassword(token, resetPasswordDto);
-  // }
+  @Post('reset-password/:token')
+  async resetPassword(
+    @Param('token') token: string,
+    @Body() resetPasswordDto: ResetPasswordDto,
+  ) {
+    return this.authService.resetPassword(token, resetPasswordDto);
+  }
 }
