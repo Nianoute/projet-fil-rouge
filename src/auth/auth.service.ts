@@ -31,9 +31,9 @@ async signin(signinAuthDto: SigninAuthDto) {
       userName: user.userName
     };
 
-return {
-  access_token: this.generateJwtToken(payload),
-}
+    return {
+      access_token: this.generateJwtToken(payload),
+    }
 }
 
 async validateUser(signinAuthDto : SigninAuthDto) {
@@ -52,16 +52,14 @@ generateJwtToken(payload) {
   return this.jwtService.sign(payload);
 }
 
-async forgotPassword(
-  createTokenResetPasswordDto: CreateTokenResetPasswordDto,
-) {
+async forgotPassword(data: CreateTokenResetPasswordDto) {
   const token = await this.tokenResetPasswordService.create(
-    createTokenResetPasswordDto,
+    data,
   );
 
-  this.mailService.create(createTokenResetPasswordDto, token.token);
+  this.mailService.create(data, token.token);
 
-  return `An email has been sent to ${createTokenResetPasswordDto.email}`;
+  return `An email has been sent to ${data.email}`;
 }
 
 async resetPassword(token: string, data: ResetPasswordDto) {

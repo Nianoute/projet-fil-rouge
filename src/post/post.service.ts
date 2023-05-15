@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostEntity } from './entities/post.entity';
+import { get } from 'http';
 
 @Injectable()
 export class PostService {
@@ -80,8 +81,20 @@ export class PostService {
   }
 
   async findOne(id: number) {
+
+    const query = await this.postRepository
+        .createQueryBuilder('post')
+        .leftJoinAndSelect('post.categories', 'categories')
+        .leftJoinAndSelect('post.author', 'author')
+
+
+    const postList = query
+                        .orderBy('post.createdAt', 'DESC')
+                        .where('post.id = :id', {id: id})
+                        .getOne();
+
     try {
-      return await this.postRepository.findOneBy({id});
+      return postList;
   } catch (error) {
       console.log(error);
       throw new Error('Error while creating post');
