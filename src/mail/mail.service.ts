@@ -26,14 +26,14 @@ export class MailService {
   }
 
   async create(createTokenResetPasswordDto: CreateTokenResetPasswordDto, token: string) {
-    const url = `http://localhost:3000/reset-password/${token}`;
+    const url = `http://localhost:3000/auth/reset-password/${token}`;
     console.log({token, "email": createTokenResetPasswordDto.email});
 
     
     await this.mailerService.sendMail({
       to: createTokenResetPasswordDto.email,
       // from: '"Support Team" <
-      subject: 'STYDYJob : Mail de changement de mot de passe',
+      subject: 'POL : Mail de changement de mot de passe',
       // template: './reset-password', // `.hbs` extension is appended automatically
       context: { // ✏️ filling curly brackets with content
         // url,
