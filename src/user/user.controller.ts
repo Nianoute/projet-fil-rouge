@@ -22,7 +22,7 @@ export class UserController {
       return this.userService.findOne(id);
     }
   
-    @Patch(':id')
+    @Put(':id')
     update(@Param('id', ParseIntPipe) id: string, @Body() updateUserDto: UpdateUserDto) {
       return this.userService.update(+id, updateUserDto);
     }
