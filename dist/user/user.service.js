@@ -40,7 +40,6 @@ let UserService = class UserService {
         const userUpdate = Object.assign(Object.assign({}, user), data);
         userUpdate.password = await bcrypt.hash(userUpdate.password, salt);
         await this.userRepository.save(userUpdate);
-        console.log(userUpdate);
         return userUpdate;
     }
     async create(data) {

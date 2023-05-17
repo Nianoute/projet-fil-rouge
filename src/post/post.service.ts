@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -102,14 +102,18 @@ export class PostService {
   }
 
   async update(id: number, data: UpdatePostDto) {
+    const post = await this.postRepository.findOneBy({ id });
+    const postUpdate = { ...post, ...data }
+
+    if (!post) {
+        throw new NotFoundException(`Le post d'id ${id} n'existe pas.`);
+    }
+
     try {
-      const post = await this.postRepository.findOneBy({ id });
-      const postUpdate = { ...post, ...data };
-      await this.postRepository.save(postUpdate);
-  
-      return postUpdate;    
+        return await this.postRepository.save(postUpdate);
     } catch (error) {
-      
+        console.log(error);
+        return error['detail'];
     }
   }
 

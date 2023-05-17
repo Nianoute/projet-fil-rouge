@@ -35,8 +35,6 @@ export class UserService {
         userUpdate.password = await bcrypt.hash(userUpdate.password, salt);
         await this.userRepository.save(userUpdate);
 
-        console.log(userUpdate)
-
         return userUpdate;
     }
 
