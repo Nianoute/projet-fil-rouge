@@ -50,9 +50,10 @@ export class PostEntity extends TimestampEntity {
     author: UserEntity;
 
     @ManyToMany(() => CategoryEntity, category => category.posts, {
-        cascade: ['insert', 'update'], nullable: true
+        cascade: ['insert', 'update'], 
+        nullable: true
     })
     
     @JoinTable()
-    categories: CategoryEntity[];
+    categories?: CategoryEntity[];
 }
