@@ -18,6 +18,11 @@ const post_module_1 = require("./post/post.module");
 const category_module_1 = require("./category/category.module");
 const mail_module_1 = require("./mail/mail.module");
 const token_reset_password_module_1 = require("./token-reset-password/token-reset-password.module");
+const sub_category_module_1 = require("./sub-category/sub-category.module");
+const variant_module_1 = require("./variant/variant.module");
+const shop_module_1 = require("./shop/shop.module");
+const comment_module_1 = require("./comment/comment.module");
+const like_module_1 = require("./like/like.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -40,7 +45,12 @@ AppModule = __decorate([
             post_module_1.PostModule,
             category_module_1.CategoryModule,
             mail_module_1.MailModule,
-            token_reset_password_module_1.TokenResetPasswordModule
+            token_reset_password_module_1.TokenResetPasswordModule,
+            sub_category_module_1.SubCategoryModule,
+            variant_module_1.VariantModule,
+            shop_module_1.ShopModule,
+            comment_module_1.CommentModule,
+            like_module_1.LikeModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

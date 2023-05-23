@@ -16,8 +16,27 @@ export class CategoryService {
     return await this.categoryRepository.save(createCategoryDto);
   }
 
-  async findAll() {
-    return await this.categoryRepository.find();
+  async findAll(queries) {
+    let { name } = queries;
+
+    const query = await this.categoryRepository
+        .createQueryBuilder('category')
+        .leftJoinAndSelect('category.children', 'children')
+
+    if(name !== undefined && name !== "") {
+      query
+        .andWhere('category.name LIKE :name', { name: `%${name}%` })
+    }
+
+    const categoriesList = query
+                      .getMany();
+
+    try {
+      return await categoriesList;
+    } catch (error) {
+      console.log(error);
+      throw new Error('Error while fetching categories');
+    }
   }
 
   async findOne(id: number) {

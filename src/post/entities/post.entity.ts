@@ -1,5 +1,6 @@
 import { CategoryEntity } from "src/category/entities/category.entity";
 import { TimestampEntity } from "src/Generic/timestamp.entity";
+import { SubCategoryEntity } from "src/sub-category/entities/sub-category.entity";
 import { UserEntity } from "src/user/entities/user.entity";
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
@@ -53,7 +54,13 @@ export class PostEntity extends TimestampEntity {
         cascade: ['insert', 'update'], 
         nullable: true
     })
+
+    @ManyToMany(() => SubCategoryEntity, subCategory => subCategory.posts, {
+        cascade: ['insert', 'update'],
+        nullable: true
+    })
     
     @JoinTable()
     categories?: CategoryEntity[];
+    subCategories?: SubCategoryEntity[];
 }
