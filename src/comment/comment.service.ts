@@ -1,19 +1,58 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { CommentEntity } from './entities/comment.entity';
 
 @Injectable()
 export class CommentService {
-  create(createCommentDto: CreateCommentDto) {
-    return 'This action adds a new comment';
+  constructor(
+    @InjectRepository(CommentEntity)
+    private readonly commentRepository: Repository<CommentEntity>
+  ){}
+
+  async create(data: CreateCommentDto) {
+    return await this.commentRepository.save(data);
   }
 
-  findAll() {
-    return `This action returns all comment`;
+  async findAll() {
+    const query = await this.commentRepository
+        .createQueryBuilder('comment')
+        .leftJoinAndSelect('comment.parent', 'parent')
+        .leftJoinAndSelect('comment.children', 'children')
+        .leftJoinAndSelect('comment.post', 'post')
+        .leftJoinAndSelect('comment.author', 'author')
+
+    const commentList = query
+                      .getMany();
+
+    try {
+      return await commentList;
+    } catch (error) {
+      console.log(error);
+      throw new Error('Error while fetching comment');
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} comment`;
+  async findOne(id: number) {
+    const query = await this.commentRepository
+    .createQueryBuilder('comment')
+    .where('comment.id = :id', { id })
+    .leftJoinAndSelect('comment.parent', 'parent')
+    .leftJoinAndSelect('comment.children', 'children')
+    .leftJoinAndSelect('comment.author', 'author')
+    .leftJoinAndSelect('comment.post', 'post')
+
+  const commentList = query
+                    .getOne();
+
+  try {
+    return await commentList;
+  } catch (error) {
+    console.log(error);
+    throw new Error('Error while fetching comment');
+  }
   }
 
   update(id: number, updateCommentDto: UpdateCommentDto) {

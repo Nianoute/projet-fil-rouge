@@ -12,8 +12,8 @@ export class CategoryService {
     private readonly categoryRepository: Repository<CategoryEntity>
   ){}
   
-  async create(createCategoryDto: CreateCategoryDto) {
-    return await this.categoryRepository.save(createCategoryDto);
+  async create(data: CreateCategoryDto) {
+    return await this.categoryRepository.save(data);
   }
 
   async findAll(queries) {
@@ -21,11 +21,12 @@ export class CategoryService {
 
     const query = await this.categoryRepository
         .createQueryBuilder('category')
+        .leftJoinAndSelect('category.parent', 'parent')
         .leftJoinAndSelect('category.children', 'children')
 
     if(name !== undefined && name !== "") {
       query
-        .andWhere('category.name LIKE :name', { name: `%${name}%` })
+        .where('category.name LIKE :name', { name: `%${name}%` })
     }
 
     const categoriesList = query
@@ -40,17 +41,31 @@ export class CategoryService {
   }
 
   async findOne(id: number) {
-    return await this.categoryRepository.findOneBy({ id });
+    const query = await this.categoryRepository
+    .createQueryBuilder('category')
+    .where('category.id = :id', { id })
+    .leftJoinAndSelect('category.parent', 'parent')
+    .leftJoinAndSelect('category.children', 'children')
+
+    const categoriesList = query
+                      .getMany();
+
+    try {
+      return await categoriesList;
+    } catch (error) {
+      console.log(error);
+      throw new Error('Error while fetching categories');
+    }
   }
 
-  async update(id: number, updateCategoryDto: UpdateCategoryDto) {
+  async update(id: number, data: UpdateCategoryDto) {
     const category = await this.findOne(id);
 
     if (!category) {
       throw new NotFoundException(`Category #${id} not found`);
     }
 
-    const categoryUpdate = { ...category, ...updateCategoryDto };
+    const categoryUpdate = { ...category, ...data };
 
     await this.categoryRepository.save(categoryUpdate);
 

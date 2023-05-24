@@ -14,6 +14,7 @@ export declare class UserController {
         admin: boolean;
         id: number;
         posts: import("../post/entities/post.entity").PostEntity[];
+        comments: import("../comment/entities/comment.entity").CommentEntity[];
         createdAt: Date;
         updatedAt: Date;
         deletedAt: Date;

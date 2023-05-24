@@ -9,11 +9,10 @@ import { PostModule } from './post/post.module';
 import { CategoryModule } from './category/category.module';
 import { MailModule } from './mail/mail.module';
 import { TokenResetPasswordModule } from './token-reset-password/token-reset-password.module';
-import { SubCategoryModule } from './sub-category/sub-category.module';
-import { VariantModule } from './variant/variant.module';
 import { ShopModule } from './shop/shop.module';
 import { CommentModule } from './comment/comment.module';
 import { LikeModule } from './like/like.module';
+import { PostVariantModule } from './post-variant/post-variant.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -34,11 +33,10 @@ import { LikeModule } from './like/like.module';
     CategoryModule,
     MailModule,
     TokenResetPasswordModule,
-    SubCategoryModule,
-    VariantModule,
     ShopModule,
     CommentModule,
-    LikeModule
+    LikeModule,
+    PostVariantModule
   ],
   controllers: [AppController],
   providers: [AppService],

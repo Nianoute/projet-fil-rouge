@@ -1,4 +1,5 @@
 import { TimestampEntity } from 'src/Generic/timestamp.entity';
+import { CommentEntity } from 'src/comment/entities/comment.entity';
 import { PostEntity } from 'src/post/entities/post.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
@@ -33,4 +34,7 @@ export class UserEntity extends TimestampEntity{
 
     @OneToMany(() => PostEntity, post => post.author)
     posts: PostEntity[];
+
+    @OneToMany(() => CommentEntity, comment => comment.author)
+    comments: CommentEntity[];
 }

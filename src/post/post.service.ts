@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostEntity } from './entities/post.entity';
-import { get } from 'http';
+import { CreatePostDto } from './dto/create-post.dto';
 
 @Injectable()
 export class PostService {
@@ -15,25 +15,6 @@ export class PostService {
   async create(data) {
     try {
         let error = false
-        if (data.place){
-          data.webSite = "";
-        } else {
-          const https = data.webSite.substring(0, 8);
-          if (https != "https://"){
-            error = true;
-            const errorMessage = "Le website doit etre un site sécurisé !!!!!!";  
-            return errorMessage;
-          }
-        }
-
-        if (data.priceInit) {
-          if(data.priceInit <= data.priceNow){
-            data.priceNow = null
-            error = true;
-            const errorMessage = "Le prix initial doit etre supérieur au prix de maintenant, sinon ce n'est pas un bon plan";  
-            return errorMessage;
-          }
-        }
 
         if (!error){
           return await this.postRepository.save(data);
@@ -50,10 +31,12 @@ export class PostService {
   async findAll(queries) {
     let { categories, title } = queries;
 
-    const query = await this.postRepository
+    const query = this.postRepository
         .createQueryBuilder('post')
         .leftJoinAndSelect('post.categories', 'categories')
         .leftJoinAndSelect('post.author', 'author')
+        .leftJoinAndSelect('post.comments', 'comments')
+        .leftJoinAndSelect('post.postVariants', 'postVariants')
 
 
     if(categories !== undefined && categories !== "") {
@@ -86,6 +69,7 @@ export class PostService {
         .createQueryBuilder('post')
         .leftJoinAndSelect('post.categories', 'categories')
         .leftJoinAndSelect('post.author', 'author')
+        .leftJoinAndSelect('post.comments', 'comments')
 
 
     const postList = query

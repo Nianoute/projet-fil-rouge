@@ -1,7 +1,6 @@
 import { TimestampEntity } from "src/Generic/timestamp.entity";
 import { PostEntity } from "src/post/entities/post.entity";
-import { SubCategoryEntity } from "src/sub-category/entities/sub-category.entity";
-import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('category')
 export class CategoryEntity extends TimestampEntity {
@@ -21,6 +20,9 @@ export class CategoryEntity extends TimestampEntity {
     @ManyToMany(() => PostEntity, post => post.categories)
     posts: PostEntity[];
 
-    @OneToMany(() => SubCategoryEntity, subCategory => subCategory.parent)
-    children: SubCategoryEntity[];
+    @ManyToOne(() => CategoryEntity, category => category.children)
+    parent: CategoryEntity[];
+
+    @OneToMany(() => CategoryEntity, category => category.parent)
+    children: CategoryEntity;
 }
