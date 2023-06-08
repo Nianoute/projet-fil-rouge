@@ -4,7 +4,7 @@ import { UserService } from './user.service';
 export declare class UserController {
     private readonly userService;
     constructor(userService: UserService);
-    create(createUserDto: CreateUserDto): Promise<"Pour votre sécurité, mettez un mot de passe supérieur à 8 caractère" | (CreateUserDto & import("./entities/user.entity").UserEntity)>;
+    create(data: CreateUserDto, files: any): Promise<"Pour votre sécurité, mettez un mot de passe supérieur à 8 caractère" | (CreateUserDto & import("./entities/user.entity").UserEntity)>;
     findAll(): Promise<import("./entities/user.entity").UserEntity[]>;
     findOne(id: number): Promise<import("./entities/user.entity").UserEntity>;
     update(id: string, updateUserDto: UpdateUserDto): Promise<{
@@ -15,6 +15,7 @@ export declare class UserController {
         id: number;
         posts: import("../post/entities/post.entity").PostEntity[];
         comments: import("../comment/entities/comment.entity").CommentEntity[];
+        postLiked: import("../post/entities/post.entity").PostEntity[];
         createdAt: Date;
         updatedAt: Date;
         deletedAt: Date;

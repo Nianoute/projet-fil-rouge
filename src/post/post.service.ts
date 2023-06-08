@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostEntity } from './entities/post.entity';
-import { CreatePostDto } from './dto/create-post.dto';
 
 @Injectable()
 export class PostService {
@@ -37,7 +36,7 @@ export class PostService {
         .leftJoinAndSelect('post.author', 'author')
         .leftJoinAndSelect('post.comments', 'comments')
         .leftJoinAndSelect('post.postVariants', 'postVariants')
-
+        .leftJoinAndSelect('post.likedBy', 'likedBy')
 
     if(categories !== undefined && categories !== "") {
       query
@@ -52,9 +51,7 @@ export class PostService {
 
     const postList = query
                         .orderBy('post.createdAt', 'DESC')
-                        .getMany();
-
-    
+                        .getMany();    
     try {
       return postList;
   } catch (error) {
@@ -70,7 +67,6 @@ export class PostService {
         .leftJoinAndSelect('post.categories', 'categories')
         .leftJoinAndSelect('post.author', 'author')
         .leftJoinAndSelect('post.comments', 'comments')
-
 
     const postList = query
                         .orderBy('post.createdAt', 'DESC')

@@ -1,26 +1,75 @@
 import { Injectable } from '@nestjs/common';
 import { CreateShopDto } from './dto/create-shop.dto';
 import { UpdateShopDto } from './dto/update-shop.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ShopEntity } from './entities/shop.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ShopService {
-  create(createShopDto: CreateShopDto) {
-    return 'This action adds a new shop';
+  constructor(
+    @InjectRepository(ShopEntity)
+    private readonly shopRepository: Repository<ShopEntity>
+  ) {}
+
+  async create(data: CreateShopDto) {
+    try {
+        return await this.shopRepository.save(data);
+    } catch (error) {
+        console.log(error);
+        throw new Error('Error while creating post');
+    }
   }
 
   findAll() {
-    return `This action returns all shop`;
+    const query = this.shopRepository
+        .createQueryBuilder('shop')
+        .leftJoinAndSelect('shop.postVariants', 'postVariant')
+        .leftJoinAndSelect('postVariant.post', 'post')
+
+    const shopList = query
+                        .getMany();
+
+    try {
+      return shopList;
+  } catch (error) {
+      console.log(error);
+      throw new Error('Error while getting Variant posts');
+  }
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} shop`;
+        const query = this.shopRepository
+        .createQueryBuilder('shop')
+        .where('shop.id = :id', { id: id })
+        .leftJoinAndSelect('shop.postVariants', 'postVariant')
+        .leftJoinAndSelect('postVariant.post', 'post')
+
+    const shop = query
+                        .getOne();
+                        
+    try {
+      return shop;
+  } catch (error) {
+      console.log(error);
+      throw new Error('Error while getting Variant posts');
+  }
   }
 
-  update(id: number, updateShopDto: UpdateShopDto) {
-    return `This action updates a #${id} shop`;
+  async update(id: number, data: UpdateShopDto) {
+    const shop = await this.shopRepository.findOneBy({ id });
+    if (!shop) {
+      throw new Error('Shop not found');
+    }
+    try {
+      return await this.shopRepository.update(id, data);
+    }
+    catch (error) {
+      console.log(error);
+      throw new Error('Error while updating post');
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} shop`;
-  }
+  async softDelete(id: number) {
+    return await this.shopRepository.softDelete(id);  }
 }

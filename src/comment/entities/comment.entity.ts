@@ -24,7 +24,9 @@ export class CommentEntity extends TimestampEntity {
     @OneToMany(() => CommentEntity, comment => comment.parent)
     children: CommentEntity;
 
-    @ManyToOne(() => PostEntity, post => post.comments)
+    @ManyToOne(() => PostEntity, post => post.comments, {
+        nullable: false,
+    })
     post: PostEntity;
 
     @ManyToOne(() => UserEntity, user => user.comments)

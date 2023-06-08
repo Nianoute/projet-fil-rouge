@@ -38,6 +38,13 @@ export class PostEntity extends TimestampEntity {
         })
     postVariants: PostVariantEntity;
 
+    @ManyToMany(() => UserEntity, user => user.postLiked, {
+        cascade: ['insert', 'update'],
+        nullable: true
+    })
+    @JoinTable()
+    likedBy?: UserEntity[];
+
     @ManyToMany(() => CategoryEntity, category => category.posts, {
         cascade: ['insert', 'update'], 
         nullable: true

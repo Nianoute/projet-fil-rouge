@@ -11,7 +11,6 @@ import { MailModule } from './mail/mail.module';
 import { TokenResetPasswordModule } from './token-reset-password/token-reset-password.module';
 import { ShopModule } from './shop/shop.module';
 import { CommentModule } from './comment/comment.module';
-import { LikeModule } from './like/like.module';
 import { PostVariantModule } from './post-variant/post-variant.module';
 @Module({
   imports: [
@@ -35,7 +34,6 @@ import { PostVariantModule } from './post-variant/post-variant.module';
     TokenResetPasswordModule,
     ShopModule,
     CommentModule,
-    LikeModule,
     PostVariantModule
   ],
   controllers: [AppController],

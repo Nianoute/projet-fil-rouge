@@ -20,7 +20,6 @@ const mail_module_1 = require("./mail/mail.module");
 const token_reset_password_module_1 = require("./token-reset-password/token-reset-password.module");
 const shop_module_1 = require("./shop/shop.module");
 const comment_module_1 = require("./comment/comment.module");
-const like_module_1 = require("./like/like.module");
 const post_variant_module_1 = require("./post-variant/post-variant.module");
 let AppModule = class AppModule {
 };
@@ -47,7 +46,6 @@ AppModule = __decorate([
             token_reset_password_module_1.TokenResetPasswordModule,
             shop_module_1.ShopModule,
             comment_module_1.CommentModule,
-            like_module_1.LikeModule,
             post_variant_module_1.PostVariantModule
         ],
         controllers: [app_controller_1.AppController],

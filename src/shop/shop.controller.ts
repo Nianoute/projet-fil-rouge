@@ -1,15 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { ShopService } from './shop.service';
 import { CreateShopDto } from './dto/create-shop.dto';
 import { UpdateShopDto } from './dto/update-shop.dto';
 
-@Controller('shop')
+@Controller('shops')
 export class ShopController {
   constructor(private readonly shopService: ShopService) {}
 
   @Post()
-  create(@Body() createShopDto: CreateShopDto) {
-    return this.shopService.create(createShopDto);
+  create(@Body() data: CreateShopDto) {
+    return this.shopService.create(data);
   }
 
   @Get()
@@ -18,17 +18,17 @@ export class ShopController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.shopService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number,) {
+    return this.shopService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateShopDto: UpdateShopDto) {
-    return this.shopService.update(+id, updateShopDto);
+  update(@Param('id', ParseIntPipe) id: number, @Body() data: UpdateShopDto) {
+    return this.shopService.update(id, data);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.shopService.remove(+id);
+  softDelete(@Param('id', ParseIntPipe) id: number,) {
+    return this.shopService.softDelete(id);
   }
 }

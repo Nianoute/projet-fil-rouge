@@ -16,6 +16,7 @@ export declare class UserService {
         id: number;
         posts: import("../post/entities/post.entity").PostEntity[];
         comments: import("../comment/entities/comment.entity").CommentEntity[];
+        postLiked: import("../post/entities/post.entity").PostEntity[];
         createdAt: Date;
         updatedAt: Date;
         deletedAt: Date;

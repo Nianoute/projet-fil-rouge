@@ -31,6 +31,7 @@ export class PostVariantService {
     const query = this.postVariantRepository
         .createQueryBuilder('postVariant')
         .leftJoinAndSelect('postVariant.post', 'post')
+        .leftJoinAndSelect('postVariant.shop', 'shop')
 
 
 
@@ -50,6 +51,7 @@ export class PostVariantService {
     .createQueryBuilder('postVariant')
     .where('postVariant.id = :id', { id: id })
     .leftJoinAndSelect('postVariant.post', 'post')
+    .leftJoinAndSelect('postVariant.shop', 'shop')
 
 
 
