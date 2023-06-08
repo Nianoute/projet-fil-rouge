@@ -5,6 +5,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UserEntity } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { uploadFileSupabase } from 'src/supabaseclient';
 const salt = 10;
 
 @Injectable()
@@ -38,18 +39,20 @@ export class UserService {
         return userUpdate;
     }
 
-    async create(data: CreateUserDto) {
+    async create(data: CreateUserDto, files: any) {
         try {
             let error = false;
-
-            const passwordLenght = data.password.length;
-            if (passwordLenght < 8) {
-                error = true;
-                const errorMessage = "Pour votre sécurité, mettez un mot de passe supérieur à 8 caractère";
-                return errorMessage
+            if(files.length > 0) {
+                const file = await uploadFileSupabase(files, 'avatar')
+                if (file.error) {
+                    error = true;
+                }
+                data.avatar = file.data.path;
             } else {
-                data.password = await bcrypt.hash(data.password, salt);
+                data.avatar = "./default_userlogo.png";
             }
+
+            data.password = await bcrypt.hash(data.password, salt);
 
             if (data.admin == null) {
                 data.admin = false

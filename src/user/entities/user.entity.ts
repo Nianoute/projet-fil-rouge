@@ -32,6 +32,11 @@ export class UserEntity extends TimestampEntity{
     })
     admin: boolean;
 
+    @Column({
+        nullable: true,
+    })
+    avatar: string;
+
     @OneToMany(() => PostEntity, post => post.author)
     posts: PostEntity[];
 

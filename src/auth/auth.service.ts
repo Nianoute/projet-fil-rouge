@@ -18,8 +18,8 @@ export class AuthService {
     private mailService: MailService
   ) {}
 
-  signup(signupAuthDto: SignupAuthDto) {
-    return this.userService.create(signupAuthDto);
+  signup(signupAuthDto: SignupAuthDto, files: any) {
+    return this.userService.create(signupAuthDto, files);
 }
 
 async signin(signinAuthDto: SigninAuthDto) {
@@ -79,7 +79,7 @@ async resetPassword(token: string, data: ResetPasswordDto) {
   user.password = data.password;
   const updatedUser = await this.userService.update(
     +data.password,
-    user,
+    user
   );
 
   await this.tokenResetPasswordService.remove(findToken.id);

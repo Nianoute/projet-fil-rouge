@@ -13,6 +13,7 @@ export declare class UserService {
         email: string;
         userName: string;
         admin: boolean;
+        avatar: string;
         id: number;
         posts: import("../post/entities/post.entity").PostEntity[];
         comments: import("../comment/entities/comment.entity").CommentEntity[];
@@ -21,6 +22,6 @@ export declare class UserService {
         updatedAt: Date;
         deletedAt: Date;
     }>;
-    create(data: CreateUserDto): Promise<"Pour votre sécurité, mettez un mot de passe supérieur à 8 caractère" | (CreateUserDto & UserEntity)>;
+    create(data: CreateUserDto, files: any): Promise<CreateUserDto & UserEntity>;
     findOneByEmail(email: string): Promise<UserEntity>;
 }

@@ -18,6 +18,7 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const user_entity_1 = require("./entities/user.entity");
 const bcrypt = require("bcrypt");
+const supabaseclient_1 = require("../supabaseclient");
 const salt = 10;
 let UserService = class UserService {
     constructor(userRepository) {
@@ -42,18 +43,20 @@ let UserService = class UserService {
         await this.userRepository.save(userUpdate);
         return userUpdate;
     }
-    async create(data) {
+    async create(data, files) {
         try {
             let error = false;
-            const passwordLenght = data.password.length;
-            if (passwordLenght < 8) {
-                error = true;
-                const errorMessage = "Pour votre sécurité, mettez un mot de passe supérieur à 8 caractère";
-                return errorMessage;
+            if (files.length > 0) {
+                const file = await (0, supabaseclient_1.uploadFileSupabase)(files, 'avatar');
+                if (file.error) {
+                    error = true;
+                }
+                data.avatar = file.data.path;
             }
             else {
-                data.password = await bcrypt.hash(data.password, salt);
+                data.avatar = "./default_userlogo.png";
             }
+            data.password = await bcrypt.hash(data.password, salt);
             if (data.admin == null) {
                 data.admin = false;
             }

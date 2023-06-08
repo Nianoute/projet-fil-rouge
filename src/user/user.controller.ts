@@ -9,12 +9,12 @@ export class UserController {
     constructor(private readonly userService: UserService) {}
 
     @Post()
-    @UseInterceptors(FilesInterceptor('files'))
+    @UseInterceptors(FilesInterceptor('file'))
     create(
       @Body() data: CreateUserDto,
-      @UploadedFiles() files,
+      @UploadedFiles() file,
       ) {
-      return this.userService.create(data);
+      return this.userService.create(data, file);
     }
   
     @Get()

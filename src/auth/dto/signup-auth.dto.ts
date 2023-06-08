@@ -3,4 +3,6 @@ export class SignupAuthDto {
     email: string;
     userName: string;
     admin: boolean;
+    files: any;
+    avatar: string;
 }

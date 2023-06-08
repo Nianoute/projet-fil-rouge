@@ -22,8 +22,8 @@ let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
     }
-    create(data, files) {
-        return this.userService.create(data);
+    create(data, file) {
+        return this.userService.create(data, file);
     }
     findAll() {
         return this.userService.findAll();
@@ -40,7 +40,7 @@ let UserController = class UserController {
 };
 __decorate([
     (0, common_1.Post)(),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FilesInterceptor)('files')),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FilesInterceptor)('file')),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.UploadedFiles)()),
     __metadata("design:type", Function),
