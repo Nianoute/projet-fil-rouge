@@ -28,7 +28,8 @@ async signin(signinAuthDto: SigninAuthDto) {
     const payload = {
       email: user.email,
       id: user.id,
-      userName: user.userName
+      userName: user.userName,
+      avatar: user.avatar
     };
 
     return {

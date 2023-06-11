@@ -46,12 +46,24 @@ let UserService = class UserService {
     async create(data, files) {
         try {
             let error = false;
-            if (files.length > 0) {
-                const file = await (0, supabaseclient_1.uploadFileSupabase)(files, 'avatar');
-                if (file.error) {
-                    error = true;
+            if (files) {
+                if (files.length > 0) {
+                    const size = files[0].size;
+                    if (size > 1000000) {
+                        error = true;
+                    }
+                    const file = await (0, supabaseclient_1.uploadFileSupabase)(files, 'avatar');
+                    if (file.error) {
+                        error = true;
+                    }
+                    else {
+                        data.avatar = file.data.path;
+                    }
+                    console.log(file);
                 }
-                data.avatar = file.data.path;
+                else {
+                    data.avatar = "./default_userlogo.png";
+                }
             }
             else {
                 data.avatar = "./default_userlogo.png";

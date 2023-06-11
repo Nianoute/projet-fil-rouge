@@ -42,12 +42,22 @@ export class UserService {
     async create(data: CreateUserDto, files: any) {
         try {
             let error = false;
-            if(files.length > 0) {
-                const file = await uploadFileSupabase(files, 'avatar')
-                if (file.error) {
-                    error = true;
+            if (files){
+                if(files.length > 0) {
+                    const size = files[0].size;
+                    if (size > 1000000) {
+                        error = true;
+                    }
+                    const file = await uploadFileSupabase(files, 'avatar')
+                    if (file.error) {
+                        error = true;
+                    } else {
+                        data.avatar = file.data.path;
+                    }
+                    console.log(file);
+                } else {
+                    data.avatar = "./default_userlogo.png";
                 }
-                data.avatar = file.data.path;
             } else {
                 data.avatar = "./default_userlogo.png";
             }

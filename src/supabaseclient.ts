@@ -8,7 +8,12 @@ const supabaseAnonKey = process.env.SUPABASE_ANON_KEY
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export const uploadFileSupabase = async (oneFile, fileFolder: string) => {
-    const filePath = `public/${Date.now()}-${oneFile[0].originalname}`
-    let uploadedFile = await supabase.storage.from(fileFolder).upload(filePath, oneFile.buffer)
+    const file = oneFile[0]
+    file.originalname = file.originalname.replaceAll(/ /g, '%20')
+    const filePath = `public/${Date.now()}-${file.originalname}`
+    console.log(file)
+    let uploadedFile = await supabase.storage.from(fileFolder).upload(filePath, file.buffer)
+    console.log(uploadedFile)
+    console.log(file.buffer)
     return uploadedFile
 }
