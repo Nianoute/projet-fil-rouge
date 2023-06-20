@@ -26,10 +26,21 @@ export class UserController {
     findOne(@Param('id', ParseIntPipe) id: number) {
       return this.userService.findOne(id);
     }
+
+    @Get(':email')
+    findOneByEmail(@Param('email') email: string) {
+      return this.userService.findOneByEmail(email);
+    }
   
-    @Put(':id')
-    update(@Param('id', ParseIntPipe) id: string, @Body() updateUserDto: UpdateUserDto) {
-      return this.userService.update(+id, updateUserDto);
+    @Put(':email')
+    update(@Body() data: UpdateUserDto) {
+      return this.userService.update(data);
+    }
+
+    @Patch(':id')
+    @UseInterceptors(FilesInterceptor('file'))
+    updateAvatar(@Param('id', ParseIntPipe) id: number, @Body() data: UpdateUserDto, @UploadedFiles() files) {
+      return this.userService.updateAvatar(id, data, files);
     }
   
     @Delete(':id')

@@ -79,7 +79,6 @@ async resetPassword(token: string, data: ResetPasswordDto) {
 
   user.password = data.password;
   const updatedUser = await this.userService.update(
-    +data.password,
     user
   );
 

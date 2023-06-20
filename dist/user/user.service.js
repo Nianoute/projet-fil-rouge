@@ -33,7 +33,7 @@ let UserService = class UserService {
     async softDelete(id) {
         return await this.userRepository.softDelete(id);
     }
-    async update(id, data) {
+    async update(data) {
         const user = await this.findOneByEmail(data.email);
         if (!user) {
             throw new common_1.NotFoundException(`User ${data.email} not found`);
@@ -43,8 +43,40 @@ let UserService = class UserService {
         await this.userRepository.save(userUpdate);
         return userUpdate;
     }
+    async updateAvatar(id, data, files) {
+        const user = await this.userRepository.findOneBy({ id });
+        if (!user) {
+            throw new common_1.NotFoundException(`User ${data.email} not found`);
+        }
+        const userUpdate = Object.assign(Object.assign(Object.assign({}, user), data), files);
+        if (files) {
+            if (files.length > 0) {
+                const size = files[0].size;
+                if (size > 1000000) {
+                    throw new Error('File too large');
+                }
+                const file = await (0, supabaseclient_1.uploadFileSupabase)(files, 'avatar');
+                if (file.error) {
+                    throw new Error('Error while uploading file');
+                }
+                else {
+                    userUpdate.avatar = file.data.path;
+                }
+                console.log(file);
+            }
+            else {
+                userUpdate.avatar = "./default_userlogo.png";
+            }
+        }
+        else {
+            userUpdate.avatar = "./default_userlogo.png";
+        }
+        await this.userRepository.save(userUpdate);
+        return userUpdate;
+    }
     async create(data, files) {
         try {
+            console.log(data);
             let error = false;
             if (files) {
                 if (files.length > 0) {
@@ -57,23 +89,22 @@ let UserService = class UserService {
                         error = true;
                     }
                     else {
-                        data.avatar = file.data.path;
+                        data.avatar = "https://plovjzslospfwozcaesq.supabase.co/storage/v1/object/public/avatar/" + file.data.path;
                     }
                     console.log(file);
                 }
                 else {
-                    data.avatar = "./default_userlogo.png";
+                    data.avatar = "";
                 }
             }
             else {
-                data.avatar = "./default_userlogo.png";
+                data.avatar = "";
             }
-            data.password = await bcrypt.hash(data.password, salt);
+            data.password = await bcrypt.hash(data.password, 10);
             if (data.admin == null) {
                 data.admin = false;
             }
             if (!error) {
-                return await this.userRepository.save(data);
             }
             else {
                 throw new Error('Error while creating user');

@@ -27,13 +27,46 @@ export class UserService {
         return await this.userRepository.softDelete(id);
     }
 
-    async update(id: number, data: UpdateUserDto) {
+    async update(data: UpdateUserDto) {
         const user = await this.findOneByEmail(data.email);
         if (!user) {
             throw new NotFoundException(`User ${data.email} not found`);
           }
         const userUpdate = { ...user, ...data };
+
         userUpdate.password = await bcrypt.hash(userUpdate.password, salt);
+        await this.userRepository.save(userUpdate);
+
+        return userUpdate;
+    }
+
+    async updateAvatar(id: number, data: UpdateUserDto, files: any) {
+        const user = await this.userRepository.findOneBy({ id });
+        if (!user) {
+            throw new NotFoundException(`User ${data.email} not found`);
+            }
+        const userUpdate = { ...user, ...data, ...files };
+
+        if (files){
+            if(files.length > 0) {
+                const size = files[0].size;
+                if (size > 1000000) {
+                    throw new Error('File too large');
+                }
+                const file = await uploadFileSupabase(files, 'avatar')
+                if (file.error) {
+                    throw new Error('Error while uploading file');
+                } else {
+                    userUpdate.avatar = file.data.path;
+                }
+                console.log(file);
+            } else {
+                userUpdate.avatar = "./default_userlogo.png";
+            }
+        } else {
+            userUpdate.avatar = "./default_userlogo.png";
+        }
+
         await this.userRepository.save(userUpdate);
 
         return userUpdate;
@@ -41,6 +74,7 @@ export class UserService {
 
     async create(data: CreateUserDto, files: any) {
         try {
+            console.log(data);
             let error = false;
             if (files){
                 if(files.length > 0) {
@@ -52,24 +86,24 @@ export class UserService {
                     if (file.error) {
                         error = true;
                     } else {
-                        data.avatar = file.data.path;
+                        data.avatar = "https://plovjzslospfwozcaesq.supabase.co/storage/v1/object/public/avatar/" + file.data.path;
                     }
                     console.log(file);
                 } else {
-                    data.avatar = "./default_userlogo.png";
+                    data.avatar = "";
                 }
             } else {
-                data.avatar = "./default_userlogo.png";
+                data.avatar = "";
             }
 
-            data.password = await bcrypt.hash(data.password, salt);
+            data.password = await bcrypt.hash(data.password, 10);
 
             if (data.admin == null) {
                 data.admin = false
             }
 
             if (!error){
-              return await this.userRepository.save(data);
+            //   return await this.userRepository.save(data);
             } else {
                 throw new Error('Error while creating user');
             }

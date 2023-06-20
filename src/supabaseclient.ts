@@ -11,9 +11,6 @@ export const uploadFileSupabase = async (oneFile, fileFolder: string) => {
     const file = oneFile[0]
     file.originalname = file.originalname.replaceAll(/ /g, '%20')
     const filePath = `public/${Date.now()}-${file.originalname}`
-    console.log(file)
     let uploadedFile = await supabase.storage.from(fileFolder).upload(filePath, file.buffer)
-    console.log(uploadedFile)
-    console.log(file.buffer)
     return uploadedFile
 }

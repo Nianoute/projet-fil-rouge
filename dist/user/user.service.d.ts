@@ -8,7 +8,7 @@ export declare class UserService {
     findAll(): Promise<UserEntity[]>;
     findOne(id: number): Promise<UserEntity>;
     softDelete(id: number): Promise<import("typeorm").UpdateResult>;
-    update(id: number, data: UpdateUserDto): Promise<{
+    update(data: UpdateUserDto): Promise<{
         password: string;
         email: string;
         userName: string;
@@ -22,6 +22,7 @@ export declare class UserService {
         updatedAt: Date;
         deletedAt: Date;
     }>;
-    create(data: CreateUserDto, files: any): Promise<CreateUserDto & UserEntity>;
+    updateAvatar(id: number, data: UpdateUserDto, files: any): Promise<any>;
+    create(data: CreateUserDto, files: any): Promise<void>;
     findOneByEmail(email: string): Promise<UserEntity>;
 }

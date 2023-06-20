@@ -4,10 +4,11 @@ import { UserService } from './user.service';
 export declare class UserController {
     private readonly userService;
     constructor(userService: UserService);
-    create(data: CreateUserDto, file: any): Promise<CreateUserDto & import("./entities/user.entity").UserEntity>;
+    create(data: CreateUserDto, file: any): Promise<void>;
     findAll(): Promise<import("./entities/user.entity").UserEntity[]>;
     findOne(id: number): Promise<import("./entities/user.entity").UserEntity>;
-    update(id: string, updateUserDto: UpdateUserDto): Promise<{
+    findOneByEmail(email: string): Promise<import("./entities/user.entity").UserEntity>;
+    update(data: UpdateUserDto): Promise<{
         password: string;
         email: string;
         userName: string;
@@ -21,5 +22,6 @@ export declare class UserController {
         updatedAt: Date;
         deletedAt: Date;
     }>;
+    updateAvatar(id: number, data: UpdateUserDto, files: any): Promise<any>;
     softDelete(id: number): Promise<import("typeorm").UpdateResult>;
 }

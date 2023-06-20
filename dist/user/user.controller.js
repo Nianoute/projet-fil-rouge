@@ -31,8 +31,14 @@ let UserController = class UserController {
     findOne(id) {
         return this.userService.findOne(id);
     }
-    update(id, updateUserDto) {
-        return this.userService.update(+id, updateUserDto);
+    findOneByEmail(email) {
+        return this.userService.findOneByEmail(email);
+    }
+    update(data) {
+        return this.userService.update(data);
+    }
+    updateAvatar(id, data, files) {
+        return this.userService.updateAvatar(id, data, files);
     }
     softDelete(id) {
         return this.userService.softDelete(id);
@@ -61,13 +67,29 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Put)(':id'),
-    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
-    __param(1, (0, common_1.Body)()),
+    (0, common_1.Get)(':email'),
+    __param(0, (0, common_1.Param)('email')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_user_dto_1.UpdateUserDto]),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], UserController.prototype, "findOneByEmail", null);
+__decorate([
+    (0, common_1.Put)(':email'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [update_user_dto_1.UpdateUserDto]),
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "update", null);
+__decorate([
+    (0, common_1.Patch)(':id'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FilesInterceptor)('file')),
+    __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(1, (0, common_1.Body)()),
+    __param(2, (0, common_1.UploadedFiles)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, update_user_dto_1.UpdateUserDto, Object]),
+    __metadata("design:returntype", void 0)
+], UserController.prototype, "updateAvatar", null);
 __decorate([
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
