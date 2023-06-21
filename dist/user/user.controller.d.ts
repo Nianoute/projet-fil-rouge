@@ -22,6 +22,6 @@ export declare class UserController {
         updatedAt: Date;
         deletedAt: Date;
     }>;
-    updateAvatar(id: number, data: UpdateUserDto, files: any): Promise<any>;
+    updateAvatar(id: number, files: any): Promise<any>;
     softDelete(id: number): Promise<import("typeorm").UpdateResult>;
 }

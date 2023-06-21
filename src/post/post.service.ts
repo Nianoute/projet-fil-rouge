@@ -54,10 +54,10 @@ export class PostService {
                         .getMany();    
     try {
       return postList;
-  } catch (error) {
-      console.log(error);
-      throw new Error('Error while creating post');
-  }
+    } catch (error) {
+        console.log(error);
+        throw new Error('Error while creating post');
+    }
   }
 
   async findOne(id: number) {

@@ -43,12 +43,13 @@ let UserService = class UserService {
         await this.userRepository.save(userUpdate);
         return userUpdate;
     }
-    async updateAvatar(id, data, files) {
+    async updateAvatar(id, files) {
+        console.log(files);
         const user = await this.userRepository.findOneBy({ id });
         if (!user) {
-            throw new common_1.NotFoundException(`User ${data.email} not found`);
+            throw new common_1.NotFoundException(`User ${id} not found`);
         }
-        const userUpdate = Object.assign(Object.assign(Object.assign({}, user), data), files);
+        const userUpdate = Object.assign(Object.assign({}, user), files);
         if (files) {
             if (files.length > 0) {
                 const size = files[0].size;
@@ -60,24 +61,22 @@ let UserService = class UserService {
                     throw new Error('Error while uploading file');
                 }
                 else {
-                    userUpdate.avatar = file.data.path;
+                    userUpdate.avatar = "https://plovjzslospfwozcaesq.supabase.co/storage/v1/object/public/avatar/" + file.data.path;
                 }
                 console.log(file);
             }
             else {
-                userUpdate.avatar = "./default_userlogo.png";
+                userUpdate.avatar = "";
             }
         }
         else {
-            userUpdate.avatar = "./default_userlogo.png";
+            userUpdate.avatar = "";
         }
         await this.userRepository.save(userUpdate);
         return userUpdate;
     }
     async create(data, files) {
         try {
-            console.log(data);
-            console.log(files);
             let error = false;
             if (files) {
                 if (files.length > 0) {
@@ -101,7 +100,7 @@ let UserService = class UserService {
             else {
                 data.avatar = "";
             }
-            data.password = await bcrypt.hash(data.password, 10);
+            data.password = await bcrypt.hash(data.password, salt);
             if (data.admin == null) {
                 data.admin = false;
             }

@@ -40,12 +40,13 @@ export class UserService {
         return userUpdate;
     }
 
-    async updateAvatar(id: number, data: UpdateUserDto, files: any) {
+    async updateAvatar(id: number, files: any) {
+        console.log(files);
         const user = await this.userRepository.findOneBy({ id });
         if (!user) {
-            throw new NotFoundException(`User ${data.email} not found`);
+            throw new NotFoundException(`User ${id} not found`);
             }
-        const userUpdate = { ...user, ...data, ...files };
+        const userUpdate = { ...user, ...files };
 
         if (files){
             if(files.length > 0) {
@@ -57,14 +58,14 @@ export class UserService {
                 if (file.error) {
                     throw new Error('Error while uploading file');
                 } else {
-                    userUpdate.avatar = file.data.path;
+                    userUpdate.avatar = "https://plovjzslospfwozcaesq.supabase.co/storage/v1/object/public/avatar/" + file.data.path;
                 }
                 console.log(file);
             } else {
-                userUpdate.avatar = "./default_userlogo.png";
+                userUpdate.avatar = "";
             }
         } else {
-            userUpdate.avatar = "./default_userlogo.png";
+            userUpdate.avatar = "";
         }
 
         await this.userRepository.save(userUpdate);
@@ -74,11 +75,6 @@ export class UserService {
 
     async create(data: CreateUserDto, files: any) {
         try {
-            console.log(data);
-            // if (data.files){
-            //     files = data.files;
-            // }
-            console.log(files);
             let error = false;
             if (files){
                 if(files.length > 0) {
@@ -100,7 +96,7 @@ export class UserService {
                 data.avatar = "";
             }
 
-            data.password = await bcrypt.hash(data.password, 10);
+            data.password = await bcrypt.hash(data.password, salt);
 
             if (data.admin == null) {
                 data.admin = false

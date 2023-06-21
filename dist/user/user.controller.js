@@ -37,8 +37,8 @@ let UserController = class UserController {
     update(data) {
         return this.userService.update(data);
     }
-    updateAvatar(id, data, files) {
-        return this.userService.updateAvatar(id, data, files);
+    updateAvatar(id, files) {
+        return this.userService.updateAvatar(id, files);
     }
     softDelete(id) {
         return this.userService.softDelete(id);
@@ -84,10 +84,9 @@ __decorate([
     (0, common_1.Patch)(':id'),
     (0, common_1.UseInterceptors)((0, platform_express_1.FilesInterceptor)('file')),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
-    __param(1, (0, common_1.Body)()),
-    __param(2, (0, common_1.UploadedFiles)()),
+    __param(1, (0, common_1.UploadedFiles)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, update_user_dto_1.UpdateUserDto, Object]),
+    __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "updateAvatar", null);
 __decorate([

@@ -39,8 +39,8 @@ export class UserController {
 
     @Patch(':id')
     @UseInterceptors(FilesInterceptor('file'))
-    updateAvatar(@Param('id', ParseIntPipe) id: number, @Body() data: UpdateUserDto, @UploadedFiles() files) {
-      return this.userService.updateAvatar(id, data, files);
+    updateAvatar(@Param('id', ParseIntPipe) id: number, @UploadedFiles() files) {
+      return this.userService.updateAvatar(id, files);
     }
   
     @Delete(':id')
