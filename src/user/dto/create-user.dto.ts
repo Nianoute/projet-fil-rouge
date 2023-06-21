@@ -4,4 +4,5 @@ export class CreateUserDto {
     userName: string;
     admin: boolean;
     avatar: string;
+    files?: any;
 }

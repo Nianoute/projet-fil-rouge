@@ -23,6 +23,6 @@ export declare class UserService {
         deletedAt: Date;
     }>;
     updateAvatar(id: number, data: UpdateUserDto, files: any): Promise<any>;
-    create(data: CreateUserDto, files: any): Promise<void>;
+    create(data: CreateUserDto, files: any): Promise<CreateUserDto & UserEntity>;
     findOneByEmail(email: string): Promise<UserEntity>;
 }

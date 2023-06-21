@@ -75,6 +75,10 @@ export class UserService {
     async create(data: CreateUserDto, files: any) {
         try {
             console.log(data);
+            // if (data.files){
+            //     files = data.files;
+            // }
+            console.log(files);
             let error = false;
             if (files){
                 if(files.length > 0) {
@@ -103,7 +107,7 @@ export class UserService {
             }
 
             if (!error){
-            //   return await this.userRepository.save(data);
+              return await this.userRepository.save(data);
             } else {
                 throw new Error('Error while creating user');
             }

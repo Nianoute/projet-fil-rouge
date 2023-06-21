@@ -77,6 +77,7 @@ let UserService = class UserService {
     async create(data, files) {
         try {
             console.log(data);
+            console.log(files);
             let error = false;
             if (files) {
                 if (files.length > 0) {
@@ -105,6 +106,7 @@ let UserService = class UserService {
                 data.admin = false;
             }
             if (!error) {
+                return await this.userRepository.save(data);
             }
             else {
                 throw new Error('Error while creating user');

@@ -4,7 +4,7 @@ import { UserService } from './user.service';
 export declare class UserController {
     private readonly userService;
     constructor(userService: UserService);
-    create(data: CreateUserDto, file: any): Promise<void>;
+    create(data: CreateUserDto, file: any): Promise<CreateUserDto & import("./entities/user.entity").UserEntity>;
     findAll(): Promise<import("./entities/user.entity").UserEntity[]>;
     findOne(id: number): Promise<import("./entities/user.entity").UserEntity>;
     findOneByEmail(email: string): Promise<import("./entities/user.entity").UserEntity>;
