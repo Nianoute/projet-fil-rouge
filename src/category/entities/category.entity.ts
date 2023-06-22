@@ -13,7 +13,7 @@ export class CategoryEntity extends TimestampEntity {
     name: string;
 
     @Column({
-        nullable: false,
+        nullable: true,
     })
     description: string;
 

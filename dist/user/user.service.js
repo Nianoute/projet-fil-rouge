@@ -28,7 +28,19 @@ let UserService = class UserService {
         return await this.userRepository.find();
     }
     async findOne(id) {
-        return await this.userRepository.findOneBy({ id });
+        const query = this.userRepository
+            .createQueryBuilder('user')
+            .leftJoinAndSelect('user.posts', 'posts');
+        const user = await query
+            .where('user.id = :id', { id })
+            .getOne();
+        try {
+            return user;
+        }
+        catch (error) {
+            console.log(error);
+            throw new Error('Error while creating user');
+        }
     }
     async softDelete(id) {
         return await this.userRepository.softDelete(id);

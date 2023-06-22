@@ -35,6 +35,7 @@ export class PostService {
         .leftJoinAndSelect('post.categories', 'categories')
         .leftJoinAndSelect('post.author', 'author')
         .leftJoinAndSelect('post.comments', 'comments')
+        .leftJoinAndSelect('comments.author', 'authorComment')
         .leftJoinAndSelect('post.postVariants', 'postVariants')
         .leftJoinAndSelect('post.likedBy', 'likedBy')
 
