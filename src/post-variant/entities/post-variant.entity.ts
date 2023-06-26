@@ -2,7 +2,7 @@ import { CategoryEntity } from "src/category/entities/category.entity";
 import { TimestampEntity } from "src/Generic/timestamp.entity";
 import { PostEntity } from "src/post/entities/post.entity";
 import { ShopEntity } from "src/shop/entities/shop.entity";
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity("postVariant")
 export class PostVariantEntity extends TimestampEntity {
@@ -33,6 +33,11 @@ export class PostVariantEntity extends TimestampEntity {
         nullable: false,
     })
     webSite: string;
+
+    @Column({
+        nullable: true,
+    })
+    imagePostV: string;
 
     @ManyToOne(() => PostEntity, post => post.postVariants)
     post: PostEntity[];

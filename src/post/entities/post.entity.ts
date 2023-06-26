@@ -26,6 +26,26 @@ export class PostEntity extends TimestampEntity {
     })
     promoDuration: string;
 
+    @Column({
+        nullable: true,
+    })
+    promoPrice: number;
+
+    @Column({
+        nullable: true,
+    })
+    price: number;
+
+    @Column({
+        nullable: true,
+    })
+    website: string;
+
+    @Column({
+        nullable: true,
+    })
+    imagePost: string;
+
     @ManyToOne(() => UserEntity, user => user.posts)
     author: UserEntity;
 

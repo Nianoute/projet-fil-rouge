@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostEntity } from './entities/post.entity';
+import { uploadFileSupabase } from 'src/supabaseclient';
 
 @Injectable()
 export class PostService {
@@ -11,15 +12,30 @@ export class PostService {
     private readonly postRepository: Repository<PostEntity>
 ) {}
 
-  async create(data) {
+  async create(data, files: any) {
     try {
-        let error = false
-
-        if (!error){
-          return await this.postRepository.save(data);
-        } else {
-          throw new Error('Error while creating post');
-        }
+      //files
+      let error = false;
+      if (files){
+          if(files.length > 0) {
+              const size = files[0].size;
+              if (size > 1000000) {
+                  error = true;
+              }
+              const file = await uploadFileSupabase(files, 'posts')
+              if (file.error) {
+                  error = true;
+              } else {
+                  data.imagePost = "https://plovjzslospfwozcaesq.supabase.co/storage/v1/object/public/posts/" + file.data.path;
+              }
+              console.log(file);
+          } else {
+              data.imagePost = "";
+          }
+      } else {
+          data.imagePost = "";
+      }
+      return await this.postRepository.save(data, files);
 
     } catch (error) {
         console.log(error);
