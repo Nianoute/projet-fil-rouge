@@ -35,7 +35,7 @@ export class PostService {
       } else {
           data.imagePost = "";
       }
-      return await this.postRepository.save(data, files);
+      return await this.postRepository.save(data);
 
     } catch (error) {
         console.log(error);
@@ -84,6 +84,7 @@ export class PostService {
         .leftJoinAndSelect('post.categories', 'categories')
         .leftJoinAndSelect('post.author', 'author')
         .leftJoinAndSelect('post.comments', 'comments')
+        .leftJoinAndSelect('post.postVariants', 'postVariants')
 
     const postList = query
                         .orderBy('post.createdAt', 'DESC')

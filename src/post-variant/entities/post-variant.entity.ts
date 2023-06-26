@@ -25,14 +25,9 @@ export class PostVariantEntity extends TimestampEntity {
     priceInit: number;
 
     @Column({
-        nullable: false,
+        nullable: true,
     })
     priceNow: number;
-
-    @Column({
-        nullable: false,
-    })
-    webSite: string;
 
     @Column({
         nullable: true,

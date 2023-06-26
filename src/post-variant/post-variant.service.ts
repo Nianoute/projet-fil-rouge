@@ -32,6 +32,7 @@ export class PostVariantService {
         .createQueryBuilder('postVariant')
         .leftJoinAndSelect('postVariant.post', 'post')
         .leftJoinAndSelect('postVariant.shop', 'shop')
+        .leftJoinAndSelect('postVariant.categories', 'categories')
 
 
 
