@@ -8,16 +8,21 @@ export declare class UserService {
     findAll(): Promise<UserEntity[]>;
     findOne(id: number): Promise<UserEntity>;
     softDelete(id: number): Promise<import("typeorm").UpdateResult>;
-    update(id: number, data: UpdateUserDto): Promise<{
+    update(data: UpdateUserDto): Promise<{
         password: string;
         email: string;
         userName: string;
+        admin: boolean;
+        avatar: string;
         id: number;
         posts: import("../post/entities/post.entity").PostEntity[];
+        comments: import("../comment/entities/comment.entity").CommentEntity[];
+        postLiked: import("../post/entities/post.entity").PostEntity[];
         createdAt: Date;
         updatedAt: Date;
         deletedAt: Date;
     }>;
-    create(createUserDto: CreateUserDto): Promise<CreateUserDto & UserEntity>;
+    updateAvatar(id: number, files: any): Promise<any>;
+    create(data: CreateUserDto, files: any): Promise<CreateUserDto & UserEntity>;
     findOneByEmail(email: string): Promise<UserEntity>;
 }

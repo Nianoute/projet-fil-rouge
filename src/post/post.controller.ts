@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, ParseIntPipe, Query, Put, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 
 @Controller('posts')
@@ -9,13 +10,19 @@ export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Post()
-  create(@Body() data: CreatePostDto) {
-    return this.postService.create(data);
+  @UseInterceptors(FilesInterceptor('file'))
+  create(
+    @Body() data: CreatePostDto,
+    @UploadedFiles() file
+    ) {
+    return this.postService.create(data, file);
   }
 
   @Get()
-  findAll() {
-    return this.postService.findAll();
+  findAll(
+    @Query() queries
+  ) {
+    return this.postService.findAll(queries);
   }
 
   @Get(':id')
@@ -23,7 +30,7 @@ export class PostController {
     return this.postService.findOne(id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(@Param('id', ParseIntPipe) id: number, @Body() updatePostDto: UpdatePostDto) {
     return this.postService.update(id, updatePostDto);
   }

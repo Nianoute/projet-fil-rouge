@@ -18,6 +18,8 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const user_entity_1 = require("./entities/user.entity");
 const bcrypt = require("bcrypt");
+const supabaseclient_1 = require("../supabaseclient");
+const salt = 10;
 let UserService = class UserService {
     constructor(userRepository) {
         this.userRepository = userRepository;
@@ -26,21 +28,100 @@ let UserService = class UserService {
         return await this.userRepository.find();
     }
     async findOne(id) {
-        return await this.userRepository.findOneBy({ id });
+        const query = this.userRepository
+            .createQueryBuilder('user')
+            .leftJoinAndSelect('user.posts', 'posts');
+        const user = await query
+            .where('user.id = :id', { id })
+            .getOne();
+        try {
+            return user;
+        }
+        catch (error) {
+            console.log(error);
+            throw new Error('Error while creating user');
+        }
     }
     async softDelete(id) {
         return await this.userRepository.softDelete(id);
     }
-    async update(id, data) {
-        const user = await this.userRepository.findOneBy({ id });
+    async update(data) {
+        const user = await this.findOneByEmail(data.email);
+        if (!user) {
+            throw new common_1.NotFoundException(`User ${data.email} not found`);
+        }
         const userUpdate = Object.assign(Object.assign({}, user), data);
+        userUpdate.password = await bcrypt.hash(userUpdate.password, salt);
         await this.userRepository.save(userUpdate);
         return userUpdate;
     }
-    async create(createUserDto) {
+    async updateAvatar(id, files) {
+        console.log(files);
+        const user = await this.userRepository.findOneBy({ id });
+        if (!user) {
+            throw new common_1.NotFoundException(`User ${id} not found`);
+        }
+        const userUpdate = Object.assign(Object.assign({}, user), files);
+        if (files) {
+            if (files.length > 0) {
+                const size = files[0].size;
+                if (size > 1000000) {
+                    throw new Error('File too large');
+                }
+                const file = await (0, supabaseclient_1.uploadFileSupabase)(files, 'avatar');
+                if (file.error) {
+                    throw new Error('Error while uploading file');
+                }
+                else {
+                    userUpdate.avatar = "https://plovjzslospfwozcaesq.supabase.co/storage/v1/object/public/avatar/" + file.data.path;
+                }
+                console.log(file);
+            }
+            else {
+                userUpdate.avatar = "";
+            }
+        }
+        else {
+            userUpdate.avatar = "";
+        }
+        await this.userRepository.save(userUpdate);
+        return userUpdate;
+    }
+    async create(data, files) {
         try {
-            createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
-            return await this.userRepository.save(createUserDto);
+            let error = false;
+            if (files) {
+                if (files.length > 0) {
+                    const size = files[0].size;
+                    if (size > 1000000) {
+                        error = true;
+                    }
+                    const file = await (0, supabaseclient_1.uploadFileSupabase)(files, 'avatar');
+                    if (file.error) {
+                        error = true;
+                    }
+                    else {
+                        data.avatar = "https://plovjzslospfwozcaesq.supabase.co/storage/v1/object/public/avatar/" + file.data.path;
+                    }
+                    console.log(file);
+                }
+                else {
+                    data.avatar = "";
+                }
+            }
+            else {
+                data.avatar = "";
+            }
+            data.password = await bcrypt.hash(data.password, salt);
+            if (data.admin == null) {
+                data.admin = false;
+            }
+            if (!error) {
+                return await this.userRepository.save(data);
+            }
+            else {
+                throw new Error('Error while creating user');
+            }
         }
         catch (error) {
             console.log(error);
