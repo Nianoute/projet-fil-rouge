@@ -1,74 +1,83 @@
-import { CategoryEntity } from "src/category/entities/category.entity";
-import { CommentEntity } from "src/comment/entities/comment.entity";
-import { TimestampEntity } from "src/Generic/timestamp.entity";
-import { PostVariantEntity } from "src/post-variant/entities/post-variant.entity";
-import { UserEntity } from "src/user/entities/user.entity";
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { CategoryEntity } from 'src/category/entities/category.entity';
+import { CommentEntity } from 'src/comment/entities/comment.entity';
+import { TimestampEntity } from 'src/Generic/timestamp.entity';
+import { PostVariantEntity } from 'src/post-variant/entities/post-variant.entity';
+import { UserEntity } from 'src/user/entities/user.entity';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
-@Entity("post")
+@Entity('post')
 export class PostEntity extends TimestampEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
-    
-    @Column({
-        nullable: false,
-        unique: true,
-    })
-    title: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column({
-        nullable: true,
-    })
-    description: string;
+  @Column({
+    nullable: false,
+    unique: true,
+  })
+  title: string;
 
-    @Column({
-        nullable: true,
-    })
-    promoDuration: string;
+  @Column({
+    nullable: true,
+  })
+  description: string;
 
-    @Column({
-        nullable: true,
-    })
-    promoPrice: number;
+  @Column({
+    nullable: true,
+  })
+  promoDuration: string;
 
-    @Column({
-        nullable: true,
-    })
-    price: number;
+  @Column({
+    nullable: true,
+  })
+  promoPrice: number;
 
-    @Column({
-        nullable: true,
-    })
-    website: string;
+  @Column({
+    nullable: true,
+  })
+  price: number;
 
-    @Column({
-        nullable: true,
-    })
-    imagePost: string;
+  @Column({
+    nullable: true,
+  })
+  website: string;
 
-    @ManyToOne(() => UserEntity, user => user.posts)
-    author: UserEntity;
+  @Column({
+    nullable: true,
+  })
+  imagePost: string;
 
-    @OneToMany(() => CommentEntity, comment => comment.post)
-    comments: CommentEntity[];
+  @ManyToOne(() => UserEntity, (user) => user.posts)
+  author: UserEntity;
 
-    @OneToMany(() => PostVariantEntity, postVariants => postVariants.post, {
-        cascade: ['insert', 'update'],
-        nullable: false,
-        })
-    postVariants: PostVariantEntity;
+  @OneToMany(() => CommentEntity, (comment) => comment.post)
+  comments: CommentEntity[];
 
-    @ManyToMany(() => UserEntity, user => user.postLiked, {
-        cascade: ['insert', 'update'],
-        nullable: true
-    })
-    @JoinTable()
-    likedBy?: UserEntity[];
+  @OneToMany(() => PostVariantEntity, (postVariants) => postVariants.post, {
+    cascade: ['insert', 'update'],
+    nullable: false,
+  })
+  postVariants: PostVariantEntity;
 
-    @ManyToMany(() => CategoryEntity, category => category.posts, {
-        cascade: ['insert', 'update'], 
-        nullable: true
-    })
-    @JoinTable()    
-    categories?: CategoryEntity[];
+  //like post
+  @ManyToMany(() => UserEntity, (user) => user.likedPosts, {
+    cascade: ['insert', 'update'],
+    nullable: true,
+  })
+  @JoinTable()
+  likedBy?: UserEntity[];
+
+  @ManyToMany(() => CategoryEntity, (category) => category.posts, {
+    cascade: ['insert', 'update'],
+    nullable: true,
+  })
+  @JoinTable()
+  categories?: CategoryEntity[];
 }

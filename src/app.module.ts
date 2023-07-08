@@ -12,6 +12,7 @@ import { TokenResetPasswordModule } from './token-reset-password/token-reset-pas
 import { ShopModule } from './shop/shop.module';
 import { CommentModule } from './comment/comment.module';
 import { PostVariantModule } from './post-variant/post-variant.module';
+import { LikeModule } from './like/like.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -34,7 +35,8 @@ import { PostVariantModule } from './post-variant/post-variant.module';
     TokenResetPasswordModule,
     ShopModule,
     CommentModule,
-    PostVariantModule
+    PostVariantModule,
+    LikeModule
   ],
   controllers: [AppController],
   providers: [AppService],

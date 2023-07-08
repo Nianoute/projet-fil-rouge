@@ -21,6 +21,7 @@ const token_reset_password_module_1 = require("./token-reset-password/token-rese
 const shop_module_1 = require("./shop/shop.module");
 const comment_module_1 = require("./comment/comment.module");
 const post_variant_module_1 = require("./post-variant/post-variant.module");
+const like_module_1 = require("./like/like.module");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
@@ -46,7 +47,8 @@ AppModule = __decorate([
             token_reset_password_module_1.TokenResetPasswordModule,
             shop_module_1.ShopModule,
             comment_module_1.CommentModule,
-            post_variant_module_1.PostVariantModule
+            post_variant_module_1.PostVariantModule,
+            like_module_1.LikeModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

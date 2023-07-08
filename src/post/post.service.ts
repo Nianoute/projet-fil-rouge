@@ -9,37 +9,38 @@ import { uploadFileSupabase } from 'src/supabaseclient';
 export class PostService {
   constructor(
     @InjectRepository(PostEntity)
-    private readonly postRepository: Repository<PostEntity>
-) {}
+    private readonly postRepository: Repository<PostEntity>,
+  ) {}
 
-  async create(data, files: any) {
+  async create(data, user, files: any) {
     try {
+      data.author = user.id;
       //files
       let error = false;
-      if (files){
-          if(files.length > 0) {
-              const size = files[0].size;
-              if (size > 1000000) {
-                  error = true;
-              }
-              const file = await uploadFileSupabase(files, 'posts')
-              if (file.error) {
-                  error = true;
-              } else {
-                  data.imagePost = "https://plovjzslospfwozcaesq.supabase.co/storage/v1/object/public/posts/" + file.data.path;
-              }
-              console.log(file);
-          } else {
-              data.imagePost = "";
+      if (files) {
+        if (files.length > 0) {
+          const size = files[0].size;
+          if (size > 1000000) {
+            error = true;
           }
+          const file = await uploadFileSupabase(files, 'posts');
+          if (file.error) {
+            error = true;
+          } else {
+            data.imagePost =
+              'https://plovjzslospfwozcaesq.supabase.co/storage/v1/object/public/posts/' +
+              file.data.path;
+          }
+        } else {
+          data.imagePost = '';
+        }
       } else {
-          data.imagePost = "";
+        data.imagePost = '';
       }
       return await this.postRepository.save(data);
-
     } catch (error) {
-        console.log(error);
-        throw new Error('Error while creating post');
+      console.log(error);
+      throw new Error('Error while creating post');
     }
   }
 
@@ -47,75 +48,84 @@ export class PostService {
     let { categories, title } = queries;
 
     const query = this.postRepository
-        .createQueryBuilder('post')
-        .leftJoinAndSelect('post.categories', 'categories')
-        .leftJoinAndSelect('post.author', 'author')
-        .leftJoinAndSelect('post.comments', 'comments')
-        .leftJoinAndSelect('comments.author', 'authorComment')
-        .leftJoinAndSelect('post.postVariants', 'postVariants')
-        .leftJoinAndSelect('post.likedBy', 'likedBy')
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.categories', 'categories')
+      .leftJoinAndSelect('post.author', 'author')
+      .leftJoinAndSelect('post.comments', 'comments')
+      .leftJoinAndSelect('comments.author', 'authorComment')
+      .leftJoinAndSelect('post.postVariants', 'postVariants')
+      .leftJoinAndSelect('post.likedBy', 'likedBy');
 
-    if(categories !== undefined && categories !== "") {
-      query
-          .where('categories.name IN (:...categories)', { categories: categories.split(',')})
+    if (categories !== undefined && categories !== '') {
+      query.where('categories.name IN (:...categories)', {
+        categories: categories.split(','),
+      });
     }
 
-    if(title !== undefined && title !== "") {
-      query
-          .andWhere('post.title like :title', {title: '%' + title + '%' })
+    if (title !== undefined && title !== '') {
+      query.andWhere('post.title like :title', { title: '%' + title + '%' });
     }
 
-
-    const postList = query
-                        .orderBy('post.createdAt', 'DESC')
-                        .getMany();    
+    const postList = query.orderBy('post.createdAt', 'DESC').getMany();
     try {
       return postList;
     } catch (error) {
-        console.log(error);
-        throw new Error('Error while creating post');
+      console.log(error);
+      throw new Error('Error while creating post');
     }
   }
 
   async findOne(id: number) {
-
     const query = await this.postRepository
-        .createQueryBuilder('post')
-        .leftJoinAndSelect('post.categories', 'categories')
-        .leftJoinAndSelect('post.author', 'author')
-        .leftJoinAndSelect('post.comments', 'comments')
-        .leftJoinAndSelect('post.postVariants', 'postVariants')
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.categories', 'categories')
+      .leftJoinAndSelect('post.author', 'author')
+      .leftJoinAndSelect('post.comments', 'comments')
+      .leftJoinAndSelect('post.postVariants', 'postVariants');
 
     const postList = query
-                        .orderBy('post.createdAt', 'DESC')
-                        .where('post.id = :id', {id: id})
-                        .getOne();
+      .orderBy('post.createdAt', 'DESC')
+      .where('post.id = :id', { id: id })
+      .getOne();
 
     try {
       return postList;
-  } catch (error) {
+    } catch (error) {
       console.log(error);
       throw new Error('Error while creating post');
-  }
+    }
   }
 
   async update(id: number, data: UpdatePostDto) {
     const post = await this.postRepository.findOneBy({ id });
-    const postUpdate = { ...post, ...data }
+    const postUpdate = { ...post, ...data };
 
     if (!post) {
-        throw new NotFoundException(`Le post d'id ${id} n'existe pas.`);
+      throw new NotFoundException(`Le post d'id ${id} n'existe pas.`);
     }
 
     try {
-        return await this.postRepository.save(postUpdate);
+      return await this.postRepository.save(postUpdate);
     } catch (error) {
-        console.log(error);
-        return error['detail'];
+      console.log(error);
+      return error['detail'];
     }
   }
 
   async softDelete(id: number) {
     return await this.postRepository.softDelete(id);
   }
+
+  //like post by user
+  // async likePost(id: number, user) {
+  //   const post = await this.postRepository.findOne(id);
+  //   post.likedBy.push(user);
+  //   return await this.postRepository.save(post);
+  // }
+
+  // async unlikePost(id: number, user) {
+  //   const post = await this.postRepository.findOne(id);
+  //   post.likedBy = post.likedBy.filter((u) => u.id !== user.id);
+  //   return await this.postRepository.save(post);
+  // }
 }
