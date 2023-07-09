@@ -1,6 +1,7 @@
 import { CategoryEntity } from 'src/category/entities/category.entity';
 import { CommentEntity } from 'src/comment/entities/comment.entity';
 import { TimestampEntity } from 'src/Generic/timestamp.entity';
+import { LikeEntity } from 'src/like/entities/like.entity';
 import { PostVariantEntity } from 'src/post-variant/entities/post-variant.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
 import {
@@ -66,13 +67,8 @@ export class PostEntity extends TimestampEntity {
   })
   postVariants: PostVariantEntity;
 
-  //like post
-  @ManyToMany(() => UserEntity, (user) => user.likedPosts, {
-    cascade: ['insert', 'update'],
-    nullable: true,
-  })
-  @JoinTable()
-  likedBy?: UserEntity[];
+  @OneToMany(() => LikeEntity, (like) => like.postLikes)
+  likesPost: LikeEntity[];
 
   @ManyToMany(() => CategoryEntity, (category) => category.posts, {
     cascade: ['insert', 'update'],

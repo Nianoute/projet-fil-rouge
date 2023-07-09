@@ -31,9 +31,7 @@ let UserService = class UserService {
         const query = this.userRepository
             .createQueryBuilder('user')
             .leftJoinAndSelect('user.posts', 'posts');
-        const user = await query
-            .where('user.id = :id', { id })
-            .getOne();
+        const user = await query.where('user.id = :id', { id }).getOne();
         try {
             return user;
         }
@@ -73,16 +71,18 @@ let UserService = class UserService {
                     throw new Error('Error while uploading file');
                 }
                 else {
-                    userUpdate.avatar = "https://plovjzslospfwozcaesq.supabase.co/storage/v1/object/public/avatar/" + file.data.path;
+                    userUpdate.avatar =
+                        'https://plovjzslospfwozcaesq.supabase.co/storage/v1/object/public/avatar/' +
+                            file.data.path;
                 }
                 console.log(file);
             }
             else {
-                userUpdate.avatar = "";
+                userUpdate.avatar = '';
             }
         }
         else {
-            userUpdate.avatar = "";
+            userUpdate.avatar = '';
         }
         await this.userRepository.save(userUpdate);
         return userUpdate;
@@ -101,16 +101,18 @@ let UserService = class UserService {
                         error = true;
                     }
                     else {
-                        data.avatar = "https://plovjzslospfwozcaesq.supabase.co/storage/v1/object/public/avatar/" + file.data.path;
+                        data.avatar =
+                            'https://plovjzslospfwozcaesq.supabase.co/storage/v1/object/public/avatar/' +
+                                file.data.path;
                     }
                     console.log(file);
                 }
                 else {
-                    data.avatar = "";
+                    data.avatar = '';
                 }
             }
             else {
-                data.avatar = "";
+                data.avatar = '';
             }
             data.password = await bcrypt.hash(data.password, salt);
             if (data.admin == null) {

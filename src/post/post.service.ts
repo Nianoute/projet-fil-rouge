@@ -54,7 +54,7 @@ export class PostService {
       .leftJoinAndSelect('post.comments', 'comments')
       .leftJoinAndSelect('comments.author', 'authorComment')
       .leftJoinAndSelect('post.postVariants', 'postVariants')
-      .leftJoinAndSelect('post.likedBy', 'likedBy');
+      .leftJoinAndSelect('post.likesPost', 'likesPost');
 
     if (categories !== undefined && categories !== '') {
       query.where('categories.name IN (:...categories)', {
@@ -115,17 +115,4 @@ export class PostService {
   async softDelete(id: number) {
     return await this.postRepository.softDelete(id);
   }
-
-  //like post by user
-  // async likePost(id: number, user) {
-  //   const post = await this.postRepository.findOne(id);
-  //   post.likedBy.push(user);
-  //   return await this.postRepository.save(post);
-  // }
-
-  // async unlikePost(id: number, user) {
-  //   const post = await this.postRepository.findOne(id);
-  //   post.likedBy = post.likedBy.filter((u) => u.id !== user.id);
-  //   return await this.postRepository.save(post);
-  // }
 }

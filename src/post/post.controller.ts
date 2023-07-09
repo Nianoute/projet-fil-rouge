@@ -49,10 +49,4 @@ export class PostController {
   softDelete(@Param('id', ParseIntPipe) id: number) {
     return this.postService.softDelete(id);
   }
-
-  //like post by user
-  // @Post(':id/like')
-  // likePost(@Param('id', ParseIntPipe) id: number, @User() user) {
-  //   return this.postService.likePost(id, user);
-  // }
 }
