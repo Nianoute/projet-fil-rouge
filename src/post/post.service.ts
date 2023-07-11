@@ -45,7 +45,7 @@ export class PostService {
   }
 
   async findAll(queries) {
-    let { categories, title } = queries;
+    let { categories, title, like } = queries;
 
     const query = this.postRepository
       .createQueryBuilder('post')
@@ -66,6 +66,11 @@ export class PostService {
       query.andWhere('post.title like :title', { title: '%' + title + '%' });
     }
 
+    //trier par nombre de like
+    if (like !== undefined && like !== '') {
+      query.orderBy('likesPost', like);
+    }
+
     const postList = query.orderBy('post.createdAt', 'DESC').getMany();
     try {
       return postList;
@@ -77,14 +82,14 @@ export class PostService {
 
   async findAllByUser(userId: number) {
     const query = this.postRepository
-    .createQueryBuilder('post')
-    .leftJoinAndSelect('post.categories', 'categories')
-    .leftJoinAndSelect('post.author', 'author')
-    .leftJoinAndSelect('post.comments', 'comments')
-    .leftJoinAndSelect('comments.author', 'authorComment')
-    .leftJoinAndSelect('post.postVariants', 'postVariants')
-    .leftJoinAndSelect('post.likesPost', 'likesPost')
-    .where('post.author = :userId', { userId });
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.categories', 'categories')
+      .leftJoinAndSelect('post.author', 'author')
+      .leftJoinAndSelect('post.comments', 'comments')
+      .leftJoinAndSelect('comments.author', 'authorComment')
+      .leftJoinAndSelect('post.postVariants', 'postVariants')
+      .leftJoinAndSelect('post.likesPost', 'likesPost')
+      .where('post.author = :userId', { userId });
 
     const postList = query.orderBy('post.createdAt', 'DESC').getMany();
     try {
@@ -160,8 +165,7 @@ export class PostService {
 
     try {
       return await this.postRepository.softDelete(id);
-    }
-    catch (error) {
+    } catch (error) {
       console.log(error);
       return error['detail'];
     }
