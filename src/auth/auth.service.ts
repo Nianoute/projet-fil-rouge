@@ -71,6 +71,7 @@ async resetPassword(token: string, data: ResetPasswordDto) {
   }
 
   const user = await this.userService.findOneByEmail(findToken.user.email);
+  console.log(user);
 
   if (!user) {
     throw new HttpException('User not found', 400);

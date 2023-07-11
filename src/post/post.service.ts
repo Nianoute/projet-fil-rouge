@@ -75,6 +75,26 @@ export class PostService {
     }
   }
 
+  async findAllByUser(userId: number) {
+    const query = this.postRepository
+    .createQueryBuilder('post')
+    .leftJoinAndSelect('post.categories', 'categories')
+    .leftJoinAndSelect('post.author', 'author')
+    .leftJoinAndSelect('post.comments', 'comments')
+    .leftJoinAndSelect('comments.author', 'authorComment')
+    .leftJoinAndSelect('post.postVariants', 'postVariants')
+    .leftJoinAndSelect('post.likesPost', 'likesPost')
+    .where('post.author = :userId', { userId });
+
+    const postList = query.orderBy('post.createdAt', 'DESC').getMany();
+    try {
+      return postList;
+    } catch (error) {
+      console.log(error);
+      throw new Error('Error while creating post');
+    }
+  }
+
   async findOne(id: number) {
     const query = await this.postRepository
       .createQueryBuilder('post')
@@ -96,13 +116,23 @@ export class PostService {
     }
   }
 
-  async update(id: number, data: UpdatePostDto) {
-    const post = await this.postRepository.findOneBy({ id });
-    const postUpdate = { ...post, ...data };
+  async update(id: number, data: UpdatePostDto, user) {
+    const query = this.postRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.author', 'author')
+      .where('post.id = :id', { id: id });
 
+    const post = await query.getOne();
+    
     if (!post) {
       throw new NotFoundException(`Le post d'id ${id} n'existe pas.`);
     }
+
+    if (post.author.id !== user.id) {
+      throw new NotFoundException(`Vous n'êtes pas l'auteur de ce post.`);
+    }
+    
+    const postUpdate = { ...post, ...data };
 
     try {
       return await this.postRepository.save(postUpdate);
@@ -112,7 +142,28 @@ export class PostService {
     }
   }
 
-  async softDelete(id: number) {
-    return await this.postRepository.softDelete(id);
+  async softDelete(id: number, user) {
+    const query = this.postRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.author', 'author')
+      .where('post.id = :id', { id: id });
+
+    const post = await query.getOne();
+
+    if (!post) {
+      throw new NotFoundException(`Le post d'id ${id} n'existe pas.`);
+    }
+
+    if (post.author.id !== user.id) {
+      throw new NotFoundException(`Vous n'êtes pas l'auteur de ce post.`);
+    }
+
+    try {
+      return await this.postRepository.softDelete(id);
+    }
+    catch (error) {
+      console.log(error);
+      return error['detail'];
+    }
   }
 }

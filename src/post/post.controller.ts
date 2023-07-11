@@ -32,6 +32,11 @@ export class PostController {
     return this.postService.findAll(queries);
   }
 
+  @Get('user/:id')
+  findAllByUser(@Param('id', ParseIntPipe) id: number) {
+    return this.postService.findAllByUser(id);
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.postService.findOne(id);
@@ -41,12 +46,13 @@ export class PostController {
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updatePostDto: UpdatePostDto,
+    @User() user
   ) {
-    return this.postService.update(id, updatePostDto);
+    return this.postService.update(id, updatePostDto, user);
   }
 
   @Delete(':id')
-  softDelete(@Param('id', ParseIntPipe) id: number) {
-    return this.postService.softDelete(id);
+  softDelete(@Param('id', ParseIntPipe) id: number, @User() user) {
+    return this.postService.softDelete(id, user);
   }
 }
