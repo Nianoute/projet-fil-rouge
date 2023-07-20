@@ -48,7 +48,6 @@ export class PostVariantService {
       .createQueryBuilder('postVariant')
       .leftJoinAndSelect('postVariant.post', 'post')
       .leftJoinAndSelect('postVariant.shop', 'shop')
-      .leftJoinAndSelect('postVariant.categories', 'categories')
 
 
 
@@ -69,7 +68,6 @@ export class PostVariantService {
       .where('postVariant.post.id = :postId', { postId: postId })
       .leftJoinAndSelect('postVariant.post', 'post')
       .leftJoinAndSelect('postVariant.shop', 'shop')
-      .leftJoinAndSelect('postVariant.categories', 'categories')
 
     const postVariantList = query
       .getMany();
@@ -105,6 +103,7 @@ export class PostVariantService {
     const query = this.postVariantRepository
       .createQueryBuilder('postVariant')
       .where('postVariant.id = :id', { id: id })
+
 
     const postVariant = query
       .getOne();

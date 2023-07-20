@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, ParseIntPipe, Param, Delete, UploadedFiles, UseInterceptors, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, ParseIntPipe, Param, Delete, UploadedFiles, UseInterceptors, Put } from '@nestjs/common';
 import { PostVariantService } from './post-variant.service';
 import { CreatePostVariantDto } from './dto/create-post-variant.dto';
 import { UpdatePostVariantDto } from './dto/update-post-variant.dto';
