@@ -10,7 +10,7 @@ export class PostService {
   constructor(
     @InjectRepository(PostEntity)
     private readonly postRepository: Repository<PostEntity>,
-  ) {}
+  ) { }
 
   async create(data, user, files: any) {
     try {
@@ -45,7 +45,7 @@ export class PostService {
   }
 
   async findAll(queries) {
-    let { categories, title, like } = queries;
+    let { categories, title } = queries;
 
     const query = this.postRepository
       .createQueryBuilder('post')
@@ -55,6 +55,7 @@ export class PostService {
       .leftJoinAndSelect('comments.author', 'authorComment')
       .leftJoinAndSelect('post.postVariants', 'postVariants')
       .leftJoinAndSelect('post.likesPost', 'likesPost');
+
 
     if (categories !== undefined && categories !== '') {
       query.where('categories.name IN (:...categories)', {
@@ -66,12 +67,8 @@ export class PostService {
       query.andWhere('post.title like :title', { title: '%' + title + '%' });
     }
 
-    //trier par nombre de like
-    if (like !== undefined && like !== '') {
-      query.orderBy('likesPost', like);
-    }
 
-    const postList = query.orderBy('post.createdAt', 'DESC').getMany();
+    const postList = query.getMany();
     try {
       return postList;
     } catch (error) {
@@ -121,14 +118,14 @@ export class PostService {
     }
   }
 
-  async update(id: number, data: UpdatePostDto, user) {
+  async update(id: number, data: UpdatePostDto, user, files) {
     const query = this.postRepository
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.author', 'author')
       .where('post.id = :id', { id: id });
 
     const post = await query.getOne();
-    
+
     if (!post) {
       throw new NotFoundException(`Le post d'id ${id} n'existe pas.`);
     }
@@ -136,14 +133,34 @@ export class PostService {
     if (post.author.id !== user.id) {
       throw new NotFoundException(`Vous n'êtes pas l'auteur de ce post.`);
     }
-    
-    const postUpdate = { ...post, ...data };
 
     try {
+      let error = false;
+      if (files) {
+        if (files.length > 0) {
+          const size = files[0].size;
+          if (size > 1000000) {
+            error = true;
+          }
+          const file = await uploadFileSupabase(files, 'posts');
+          if (file.error) {
+            error = true;
+          } else {
+            data.imagePost =
+              'https://plovjzslospfwozcaesq.supabase.co/storage/v1/object/public/posts/' +
+              file.data.path;
+          }
+        } else {
+          data.imagePost = '';
+        }
+      } else {
+        data.imagePost = '';
+      }
+      const postUpdate = { ...post, ...data };
       return await this.postRepository.save(postUpdate);
     } catch (error) {
       console.log(error);
-      return error['detail'];
+      throw new Error('Error while creating post');
     }
   }
 

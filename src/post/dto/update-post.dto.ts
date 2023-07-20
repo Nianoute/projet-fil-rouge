@@ -1,4 +1,4 @@
-export class UpdatePostDto{
+export class UpdatePostDto {
         title?: string;
         description?: string;
         categories?: Array<any>;
@@ -7,4 +7,5 @@ export class UpdatePostDto{
         place?: string;
         webSite?: string;
         promoDuration?: string;
+        imagePost?: string;
 }

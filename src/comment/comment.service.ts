@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -10,7 +10,7 @@ export class CommentService {
   constructor(
     @InjectRepository(CommentEntity)
     private readonly commentRepository: Repository<CommentEntity>,
-  ) {}
+  ) { }
 
   async create(data: CreateCommentDto, user) {
     data.author = user.id;
@@ -74,11 +74,29 @@ export class CommentService {
     }
   }
 
-  update(id: number, updateCommentDto: UpdateCommentDto) {
-    return `This action updates a #${id} comment`;
-  }
+  // async update(id: number, data: UpdateCommentDto, user) {
+  //   const query = this.commentRepository
+  //     .createQueryBuilder('comment')
+  //     .leftJoinAndSelect('comment.author', 'author')
+  //     .where('comment.id = :id', { id: id });
 
-  remove(id: number) {
-    return `This action removes a #${id} comment`;
-  }
+  //   const comment = await query.getOne();
+
+  //   if (!comment) {
+  //     throw new NotFoundException(`Le comment d'id ${id} n'existe pas.`);
+  //   }
+
+  //   if (comment.author.id !== user.id) {
+  //     throw new NotFoundException(`Vous n'êtes pas l'auteur de ce comment.`);
+  //   }
+
+  //   const commentUpdate = { ...comment, ...data };
+
+  //   try {
+  //     return await this.commentRepository.save(commentUpdate);
+  //   } catch (error) {
+  //     console.log(error);
+  //     return error['detail'];
+  //   }
+  // }
 }

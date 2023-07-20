@@ -1,1 +1,3 @@
-export class CreatePostVariantDto {}
+export class CreatePostVariantDto {
+    imagePostV?: string;
+}

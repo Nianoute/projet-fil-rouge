@@ -10,7 +10,7 @@ export class LikeService {
   constructor(
     @InjectRepository(LikeEntity)
     private readonly likeRepository: Repository<LikeEntity>,
-  ) {}
+  ) { }
 
   create(data: CreateLikeDto, user) {
     console.log('data', data);
