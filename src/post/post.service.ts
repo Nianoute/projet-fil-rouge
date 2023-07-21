@@ -55,7 +55,6 @@ export class PostService {
       .leftJoinAndSelect('comments.author', 'authorComment')
       .leftJoinAndSelect('post.postVariants', 'postVariants')
       .leftJoinAndSelect('post.likesPost', 'likesPost')
-      .orderBy('post.createdAt', 'DESC');
 
 
     if (categories !== undefined && categories !== '') {
@@ -66,6 +65,14 @@ export class PostService {
 
     if (title !== undefined && title !== '') {
       query.andWhere('post.title like :title', { title: '%' + title + '%' });
+    }
+
+    if (date !== undefined && date !== '') {
+      if (date === "asc") {
+        query.orderBy('post.createdAt', 'ASC');
+      } else {
+        query.orderBy('post.createdAt', 'DESC');
+      }
     }
 
 
