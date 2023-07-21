@@ -45,7 +45,7 @@ export class PostService {
   }
 
   async findAll(queries) {
-    let { categories, title } = queries;
+    let { categories, title, like, date } = queries;
 
     const query = this.postRepository
       .createQueryBuilder('post')
@@ -54,7 +54,8 @@ export class PostService {
       .leftJoinAndSelect('post.comments', 'comments')
       .leftJoinAndSelect('comments.author', 'authorComment')
       .leftJoinAndSelect('post.postVariants', 'postVariants')
-      .leftJoinAndSelect('post.likesPost', 'likesPost');
+      .leftJoinAndSelect('post.likesPost', 'likesPost')
+      .orderBy('post.createdAt', 'DESC');
 
 
     if (categories !== undefined && categories !== '') {
@@ -69,6 +70,14 @@ export class PostService {
 
 
     const postList = query.getMany();
+    if (like !== undefined && like !== '') {
+      postList.then((posts) => {
+        posts.sort((a, b) => {
+          return b.likesPost.length - a.likesPost.length;
+        });
+      });
+    }
+
     try {
       return postList;
     } catch (error) {
