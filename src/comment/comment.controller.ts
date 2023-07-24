@@ -1,15 +1,25 @@
-import { Controller, Get, Post, Body, Patch, Param, ParseIntPipe, Delete} from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  ParseIntPipe,
+  Delete,
+} from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
+import { User } from 'src/decorator/decorator.controller';
 
 @Controller('comments')
 export class CommentController {
-  constructor(private readonly commentService: CommentService) {}
+  constructor(private readonly commentService: CommentService) { }
 
   @Post()
-  create(@Body() createCommentDto: CreateCommentDto) {
-    return this.commentService.create(createCommentDto);
+  create(@Body() data: CreateCommentDto, @User() user) {
+    return this.commentService.create(data, user);
   }
 
   @Get()
@@ -22,13 +32,22 @@ export class CommentController {
     return this.commentService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() updateCommentDto: UpdateCommentDto) {
-    return this.commentService.update(id, updateCommentDto);
-  }
+  // @Patch(':id')
+  // update(
+  //   @Param('id', ParseIntPipe) id: number,
+  //   @Body() data: UpdateCommentDto,
+  //   @User() user
+  // ) {
+  //   return this.commentService.update(id, data, user);
+  // }
 
-  @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.commentService.remove(id);
+  // @Delete(':id')
+  // remove(@Param('id', ParseIntPipe) id: number) {
+  //   return this.commentService.remove(id);
+  // }
+
+  @Get('post/:postId')
+  findAllByPost(@Param('postId', ParseIntPipe) postId: number) {
+    return this.commentService.findAllByPost(postId);
   }
 }

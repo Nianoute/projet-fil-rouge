@@ -1,4 +1,5 @@
 import { TimestampEntity } from "src/Generic/timestamp.entity";
+import { PostVariantEntity } from "src/post-variant/entities/post-variant.entity";
 import { PostEntity } from "src/post/entities/post.entity";
 import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 

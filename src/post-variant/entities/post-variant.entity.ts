@@ -8,7 +8,7 @@ import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColum
 export class PostVariantEntity extends TimestampEntity {
     @PrimaryGeneratedColumn()
     id: number;
-    
+
     @Column({
         nullable: false
     })
@@ -41,12 +41,5 @@ export class PostVariantEntity extends TimestampEntity {
         cascade: ['insert', 'update']
     })
     shop: ShopEntity[];
-
-    @ManyToMany(() => CategoryEntity, category => category.posts, {
-        cascade: ['insert', 'update'], 
-        nullable: true
-    })
-    @JoinTable()    
-    categories?: CategoryEntity[];
 
 }

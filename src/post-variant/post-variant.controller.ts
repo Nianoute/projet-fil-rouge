@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, ParseIntPipe, Param, Delete, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Body, ParseIntPipe, Param, Delete, UploadedFiles, UseInterceptors, Put } from '@nestjs/common';
 import { PostVariantService } from './post-variant.service';
 import { CreatePostVariantDto } from './dto/create-post-variant.dto';
 import { UpdatePostVariantDto } from './dto/update-post-variant.dto';
@@ -6,14 +6,14 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 
 @Controller('post-variants')
 export class PostVariantController {
-  constructor(private readonly postVariantService: PostVariantService) {}
+  constructor(private readonly postVariantService: PostVariantService) { }
 
   @Post()
   @UseInterceptors(FilesInterceptor('file'))
   create(
     @Body() data: CreatePostVariantDto,
     @UploadedFiles() file
-    ) {
+  ) {
     return this.postVariantService.create(data, file);
   }
 
@@ -32,9 +32,10 @@ export class PostVariantController {
     return this.postVariantService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() data: UpdatePostVariantDto) {
-    return this.postVariantService.update(id, data);
+  @Put(':id')
+  @UseInterceptors(FilesInterceptor('file'))
+  update(@Param('id', ParseIntPipe) id: number, @Body() data: UpdatePostVariantDto, @UploadedFiles() file) {
+    return this.postVariantService.update(id, data, file);
   }
 
   @Delete(':id')

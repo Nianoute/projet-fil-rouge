@@ -10,124 +10,125 @@ const salt = 10;
 
 @Injectable()
 export class UserService {
-    constructor(
-        @InjectRepository(UserEntity)
-        private userRepository: Repository<UserEntity>,
-    ) {}
+  constructor(
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
+  ) {}
 
-    async findAll() { 
-        return await this.userRepository.find();
+  async findAll() {
+    return await this.userRepository.find();
+  }
+
+  async findOne(id: number) {
+    const query = this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.posts', 'posts');
+
+    const user = await query.where('user.id = :id', { id }).getOne();
+
+    try {
+      return user;
+    } catch (error) {
+      console.log(error);
+      throw new Error('Error while creating user');
     }
+  }
 
-    async findOne(id: number) {
-        const query = this.userRepository
-                .createQueryBuilder('user')
-                .leftJoinAndSelect('user.posts', 'posts')
-        
-        const user =  await query
-                .where('user.id = :id', { id })
-                .getOne();
+  async softDelete(id: number) {
+    return await this.userRepository.softDelete(id);
+  }
 
-        try {
-            return user;
-        } catch (error) {
-            console.log(error);
-            throw new Error('Error while creating user');
+  async update(data: UpdateUserDto) {
+    const user = await this.findOneByEmail(data.email);
+    if (!user) {
+      throw new NotFoundException(`User ${data.email} not found`);
+    }
+    const userUpdate = { ...user, ...data };
+
+    userUpdate.password = await bcrypt.hash(userUpdate.password, salt);
+    await this.userRepository.save(userUpdate);
+
+    return userUpdate;
+  }
+
+  async updateAvatar(id: number, files: any) {
+    console.log(files);
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) {
+      throw new NotFoundException(`User ${id} not found`);
+    }
+    const userUpdate = { ...user, ...files };
+
+    if (files) {
+      if (files.length > 0) {
+        const size = files[0].size;
+        if (size > 1000000) {
+          throw new Error('File too large');
         }
-    }
-
-    async softDelete(id: number) {
-        return await this.userRepository.softDelete(id);
-    }
-
-    async update(data: UpdateUserDto) {
-        const user = await this.findOneByEmail(data.email);
-        if (!user) {
-            throw new NotFoundException(`User ${data.email} not found`);
-          }
-        const userUpdate = { ...user, ...data };
-
-        userUpdate.password = await bcrypt.hash(userUpdate.password, salt);
-        await this.userRepository.save(userUpdate);
-
-        return userUpdate;
-    }
-
-    async updateAvatar(id: number, files: any) {
-        console.log(files);
-        const user = await this.userRepository.findOneBy({ id });
-        if (!user) {
-            throw new NotFoundException(`User ${id} not found`);
-            }
-        const userUpdate = { ...user, ...files };
-
-        if (files){
-            if(files.length > 0) {
-                const size = files[0].size;
-                if (size > 1000000) {
-                    throw new Error('File too large');
-                }
-                const file = await uploadFileSupabase(files, 'avatar')
-                if (file.error) {
-                    throw new Error('Error while uploading file');
-                } else {
-                    userUpdate.avatar = "https://plovjzslospfwozcaesq.supabase.co/storage/v1/object/public/avatar/" + file.data.path;
-                }
-                console.log(file);
-            } else {
-                userUpdate.avatar = "";
-            }
+        const file = await uploadFileSupabase(files, 'avatar');
+        if (file.error) {
+          throw new Error('Error while uploading file');
         } else {
-            userUpdate.avatar = "";
+          userUpdate.avatar =
+            'https://plovjzslospfwozcaesq.supabase.co/storage/v1/object/public/avatar/' +
+            file.data.path;
         }
-
-        await this.userRepository.save(userUpdate);
-
-        return userUpdate;
+        console.log(file);
+      } else {
+        userUpdate.avatar = '';
+      }
+    } else {
+      userUpdate.avatar = '';
     }
 
-    async create(data: CreateUserDto, files: any) {
-        try {
-            let error = false;
-            if (files){
-                if(files.length > 0) {
-                    const size = files[0].size;
-                    if (size > 1000000) {
-                        error = true;
-                    }
-                    const file = await uploadFileSupabase(files, 'avatar')
-                    if (file.error) {
-                        error = true;
-                    } else {
-                        data.avatar = "https://plovjzslospfwozcaesq.supabase.co/storage/v1/object/public/avatar/" + file.data.path;
-                    }
-                    console.log(file);
-                } else {
-                    data.avatar = "";
-                }
-            } else {
-                data.avatar = "";
-            }
+    await this.userRepository.save(userUpdate);
 
-            data.password = await bcrypt.hash(data.password, salt);
+    return userUpdate;
+  }
 
-            if (data.admin == null) {
-                data.admin = false
-            }
-
-            if (!error){
-              return await this.userRepository.save(data);
-            } else {
-                throw new Error('Error while creating user');
-            }
-
-        } catch (error) {
-          console.log(error);
-          throw new Error('Error while creating user');
+  async create(data: CreateUserDto, files: any) {
+    try {
+      let error = false;
+      if (files) {
+        if (files.length > 0) {
+          const size = files[0].size;
+          if (size > 1000000) {
+            error = true;
+          }
+          const file = await uploadFileSupabase(files, 'avatar');
+          if (file.error) {
+            error = true;
+          } else {
+            data.avatar =
+              'https://plovjzslospfwozcaesq.supabase.co/storage/v1/object/public/avatar/' +
+              file.data.path;
+          }
+          console.log(file);
+        } else {
+          data.avatar = '';
         }
+      } else {
+        data.avatar = '';
       }
 
-    async findOneByEmail(email: string) : Promise<UserEntity> {
-        return await this.userRepository.findOneBy({ email })
+      data.password = await bcrypt.hash(data.password, salt);
+
+      if (data.admin == null) {
+        data.admin = false;
+      }
+
+      if (!error) {
+        return await this.userRepository.save(data);
+      } else {
+        throw new Error('Error while creating user');
+      }
+    } catch (error) {
+      console.log(error);
+      throw new Error('Error while creating user');
     }
+  }
+
+  async findOneByEmail(email: string): Promise<UserEntity> {
+    return await this.userRepository.findOneBy({ email });
+  }
 }
