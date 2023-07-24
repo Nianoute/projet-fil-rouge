@@ -37,6 +37,24 @@ export class PostService {
       } else {
         data.imagePost = '';
       }
+
+      if (error) {
+        throw new Error('Le fichier est trop volumineux');
+      }
+
+      if (data.promoPrice !== null) {
+        if (data.price <= data.promoPrice) {
+          throw new Error('Le prix promo ne peut pas être supérieur ou égal au prix normal');
+        }
+      }
+
+      if (data.promoDuration !== null && data.promoDuration !== '') {
+        const date = new Date(data.promoDuration);
+        if (date < new Date()) {
+          throw new Error('La date de fin de promo ne peut pas être inférieure à la date du jour');
+        }
+      }
+
       return await this.postRepository.save(data);
     } catch (error) {
       console.log(error);
@@ -172,6 +190,24 @@ export class PostService {
       } else {
         data.imagePost = '';
       }
+
+      if (error) {
+        throw new Error('Le fichier est trop volumineux');
+      }
+
+      if (data.promoPrice !== null) {
+        if (data.price <= data.promoPrice) {
+          throw new Error('Le prix promo ne peut pas être supérieur ou égal au prix normal');
+        }
+      }
+
+      if (data.promoDuration !== null && data.promoDuration !== '') {
+        const date = new Date(data.promoDuration);
+        if (date < new Date()) {
+          throw new Error('La date de fin de promo ne peut pas être inférieure à la date du jour');
+        }
+      }
+
       const postUpdate = { ...post, ...data };
       return await this.postRepository.save(postUpdate);
     } catch (error) {

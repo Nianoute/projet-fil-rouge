@@ -13,7 +13,7 @@ export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
-  ) {}
+  ) { }
 
   async findAll() {
     return await this.userRepository.find();
@@ -109,6 +109,14 @@ export class UserService {
         }
       } else {
         data.avatar = '';
+      }
+
+      if (error) {
+        throw new Error('File too big');
+      }
+
+      if (data.password.length < 8) {
+        throw new Error('Password too short');
       }
 
       data.password = await bcrypt.hash(data.password, salt);

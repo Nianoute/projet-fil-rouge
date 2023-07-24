@@ -32,20 +32,6 @@ export class CommentController {
     return this.commentService.findOne(id);
   }
 
-  // @Patch(':id')
-  // update(
-  //   @Param('id', ParseIntPipe) id: number,
-  //   @Body() data: UpdateCommentDto,
-  //   @User() user
-  // ) {
-  //   return this.commentService.update(id, data, user);
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id', ParseIntPipe) id: number) {
-  //   return this.commentService.remove(id);
-  // }
-
   @Get('post/:postId')
   findAllByPost(@Param('postId', ParseIntPipe) postId: number) {
     return this.commentService.findAllByPost(postId);

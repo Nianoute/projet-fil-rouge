@@ -35,6 +35,10 @@ export class PostVariantService {
         data.imagePostV = "";
       }
 
+      if (error) {
+        throw new Error('File too big');
+      }
+
       return await this.postVariantRepository.save(data);
 
     } catch (error) {
@@ -86,8 +90,6 @@ export class PostVariantService {
       .leftJoinAndSelect('postVariant.post', 'post')
       .leftJoinAndSelect('postVariant.shop', 'shop')
 
-
-
     const postVariant = query
       .getOne();
 
@@ -131,6 +133,7 @@ export class PostVariantService {
       } else {
         data.imagePostV = "";
       }
+
       return await this.postVariantRepository.update(id, data);
     }
     catch (error) {
