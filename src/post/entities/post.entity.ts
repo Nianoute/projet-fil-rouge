@@ -6,6 +6,7 @@ import { PostVariantEntity } from 'src/post-variant/entities/post-variant.entity
 import { UserEntity } from 'src/user/entities/user.entity';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinTable,
   ManyToMany,
@@ -30,10 +31,10 @@ export class PostEntity extends TimestampEntity {
   })
   description: string;
 
-  @Column({
+  @CreateDateColumn({
     nullable: true,
   })
-  promoDuration: string;
+  promoDuration: Date;
 
   @Column({
     nullable: true,
