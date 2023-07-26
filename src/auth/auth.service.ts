@@ -29,7 +29,7 @@ export class AuthService {
       email: user.email,
       id: user.id,
       userName: user.userName,
-      avatar: user.avatar
+      admin: user.admin,
     };
 
     return {

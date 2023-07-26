@@ -3,7 +3,7 @@ export class UpdatePostDto {
         description?: string;
         categories?: Array<any>;
         price?: number;
-        pricePromo?: number;
+        promoPrice?: number;
         place?: string;
         webSite?: string;
         promoDuration?: string;

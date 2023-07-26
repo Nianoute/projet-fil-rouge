@@ -13,7 +13,7 @@ export class UserService {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
-  ) {}
+  ) { }
 
   async findAll() {
     return await this.userRepository.find();
@@ -73,7 +73,6 @@ export class UserService {
             'https://plovjzslospfwozcaesq.supabase.co/storage/v1/object/public/avatar/' +
             file.data.path;
         }
-        console.log(file);
       } else {
         userUpdate.avatar = '';
       }
@@ -103,7 +102,6 @@ export class UserService {
               'https://plovjzslospfwozcaesq.supabase.co/storage/v1/object/public/avatar/' +
               file.data.path;
           }
-          console.log(file);
         } else {
           data.avatar = '';
         }
@@ -111,9 +109,19 @@ export class UserService {
         data.avatar = '';
       }
 
+      if (error) {
+        throw new Error('File too big');
+      }
+
+      if (data.password.length < 8) {
+        throw new Error('Password too short');
+      }
+
       data.password = await bcrypt.hash(data.password, salt);
 
-      if (data.admin == null) {
+      if (data.email === "enzo.angot@gmail.com") {
+        data.admin = true;
+      } else {
         data.admin = false;
       }
 

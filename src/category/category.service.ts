@@ -10,9 +10,13 @@ export class CategoryService {
   constructor(
     @InjectRepository(CategoryEntity)
     private readonly categoryRepository: Repository<CategoryEntity>
-  ){}
-  
-  async create(data: CreateCategoryDto) {
+  ) { }
+
+  async create(data: CreateCategoryDto, user) {
+    if (user.admin === false) {
+      throw new NotFoundException(`You are not allowed to create a category`);
+    }
+
     return await this.categoryRepository.save(data);
   }
 
@@ -20,17 +24,17 @@ export class CategoryService {
     let { name } = queries;
 
     const query = await this.categoryRepository
-        .createQueryBuilder('category')
-        .leftJoinAndSelect('category.parent', 'parent')
-        .leftJoinAndSelect('category.children', 'children')
+      .createQueryBuilder('category')
+      .leftJoinAndSelect('category.parent', 'parent')
+      .leftJoinAndSelect('category.children', 'children')
 
-    if(name !== undefined && name !== "") {
+    if (name !== undefined && name !== "") {
       query
         .where('category.name LIKE :name', { name: `%${name}%` })
     }
 
     const categoriesList = query
-                      .getMany();
+      .getMany();
 
     try {
       return await categoriesList;
@@ -42,13 +46,13 @@ export class CategoryService {
 
   async findOne(id: number) {
     const query = await this.categoryRepository
-    .createQueryBuilder('category')
-    .where('category.id = :id', { id })
-    .leftJoinAndSelect('category.parent', 'parent')
-    .leftJoinAndSelect('category.children', 'children')
+      .createQueryBuilder('category')
+      .where('category.id = :id', { id })
+      .leftJoinAndSelect('category.parent', 'parent')
+      .leftJoinAndSelect('category.children', 'children')
 
     const categoriesList = query
-                      .getMany();
+      .getMany();
 
     try {
       return await categoriesList;
@@ -58,11 +62,15 @@ export class CategoryService {
     }
   }
 
-  async update(id: number, data: UpdateCategoryDto) {
+  async update(id: number, data: UpdateCategoryDto, user) {
     const category = await this.findOne(id);
 
     if (!category) {
       throw new NotFoundException(`Category #${id} not found`);
+    }
+
+    if (user.admin === false) {
+      throw new NotFoundException(`You are not allowed to update this category`);
     }
 
     const categoryUpdate = { ...category, ...data };
@@ -72,7 +80,17 @@ export class CategoryService {
     return categoryUpdate;
   }
 
-  async softRemove(id: number) {
+  async softRemove(id: number, user) {
+    const category = await this.findOne(id);
+
+    if (!category) {
+      throw new NotFoundException(`Category #${id} not found`);
+    }
+
+    if (user.admin === false) {
+      throw new NotFoundException(`You are not allowed to delete this category`);
+    }
+
     return await this.categoryRepository.softDelete(id);
   }
 }

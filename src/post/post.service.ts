@@ -37,6 +37,24 @@ export class PostService {
       } else {
         data.imagePost = '';
       }
+
+      if (error) {
+        throw new Error('Le fichier est trop volumineux');
+      }
+
+      if (data.promoPrice !== null) {
+        if (data.price <= data.promoPrice) {
+          throw new Error('Le prix promo ne peut pas être supérieur ou égal au prix normal');
+        }
+      }
+
+      if (data.promoDuration !== null && data.promoDuration !== '') {
+        const date = new Date(data.promoDuration);
+        if (date < new Date()) {
+          throw new Error('La date de fin de promo ne peut pas être inférieure à la date du jour');
+        }
+      }
+
       return await this.postRepository.save(data);
     } catch (error) {
       console.log(error);
@@ -67,17 +85,23 @@ export class PostService {
       query.andWhere('post.title like :title', { title: '%' + title + '%' });
     }
 
+    console.log(date);
     if (date !== undefined && date !== '') {
+      console.log(date);
       if (date === "asc") {
+        console.log('date');
         query.orderBy('post.createdAt', 'ASC');
-      } else {
+      }
+      if (date === "desc") {
+        console.log('date desc');
         query.orderBy('post.createdAt', 'DESC');
       }
     }
 
 
     const postList = query.getMany();
-    if (like !== undefined && like !== '') {
+    if (like === "like") {
+      console.log('like');
       postList.then((posts) => {
         posts.sort((a, b) => {
           return b.likesPost.length - a.likesPost.length;
@@ -172,6 +196,24 @@ export class PostService {
       } else {
         data.imagePost = '';
       }
+
+      if (error) {
+        throw new Error('Le fichier est trop volumineux');
+      }
+
+      if (data.promoPrice !== null) {
+        if (data.price <= data.promoPrice) {
+          throw new Error('Le prix promo ne peut pas être supérieur ou égal au prix normal');
+        }
+      }
+
+      if (data.promoDuration !== null && data.promoDuration !== '') {
+        const date = new Date(data.promoDuration);
+        if (date < new Date()) {
+          throw new Error('La date de fin de promo ne peut pas être inférieure à la date du jour');
+        }
+      }
+
       const postUpdate = { ...post, ...data };
       return await this.postRepository.save(postUpdate);
     } catch (error) {
@@ -192,7 +234,7 @@ export class PostService {
       throw new NotFoundException(`Le post d'id ${id} n'existe pas.`);
     }
 
-    if (post.author.id !== user.id) {
+    if (post.author.id !== user.id && user.admin === false) {
       throw new NotFoundException(`Vous n'êtes pas l'auteur de ce post.`);
     }
 

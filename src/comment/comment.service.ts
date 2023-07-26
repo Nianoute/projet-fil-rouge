@@ -14,6 +14,18 @@ export class CommentService {
 
   async create(data: CreateCommentDto, user) {
     data.author = user.id;
+
+    if (data.parent === undefined) {
+      console.log(data);
+      if (data.name === '' || data.name === null || data.name === undefined) {
+        throw new Error('name is required');
+      }
+    }
+
+    if (data.description === undefined || data.description === '' || data.description === null) {
+      throw new Error('description is required');
+    }
+
     return await this.commentRepository.save(data);
   }
 
@@ -73,30 +85,4 @@ export class CommentService {
       throw new Error('Error while fetching comment');
     }
   }
-
-  // async update(id: number, data: UpdateCommentDto, user) {
-  //   const query = this.commentRepository
-  //     .createQueryBuilder('comment')
-  //     .leftJoinAndSelect('comment.author', 'author')
-  //     .where('comment.id = :id', { id: id });
-
-  //   const comment = await query.getOne();
-
-  //   if (!comment) {
-  //     throw new NotFoundException(`Le comment d'id ${id} n'existe pas.`);
-  //   }
-
-  //   if (comment.author.id !== user.id) {
-  //     throw new NotFoundException(`Vous n'êtes pas l'auteur de ce comment.`);
-  //   }
-
-  //   const commentUpdate = { ...comment, ...data };
-
-  //   try {
-  //     return await this.commentRepository.save(commentUpdate);
-  //   } catch (error) {
-  //     console.log(error);
-  //     return error['detail'];
-  //   }
-  // }
 }
