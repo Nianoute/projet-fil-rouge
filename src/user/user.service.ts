@@ -73,7 +73,6 @@ export class UserService {
             'https://plovjzslospfwozcaesq.supabase.co/storage/v1/object/public/avatar/' +
             file.data.path;
         }
-        console.log(file);
       } else {
         userUpdate.avatar = '';
       }
@@ -103,7 +102,6 @@ export class UserService {
               'https://plovjzslospfwozcaesq.supabase.co/storage/v1/object/public/avatar/' +
               file.data.path;
           }
-          console.log(file);
         } else {
           data.avatar = '';
         }
@@ -121,7 +119,9 @@ export class UserService {
 
       data.password = await bcrypt.hash(data.password, salt);
 
-      if (data.admin == null) {
+      if (data.email === "enzo.angot@gmail.com") {
+        data.admin = true;
+      } else {
         data.admin = false;
       }
 

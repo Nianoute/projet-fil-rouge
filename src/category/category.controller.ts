@@ -2,14 +2,18 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Query 
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { User } from 'src/decorator/decorator.controller';
 
 @Controller('categories')
 export class CategoryController {
-  constructor(private readonly categoryService: CategoryService) {}
+  constructor(private readonly categoryService: CategoryService) { }
 
   @Post()
-  create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoryService.create(createCategoryDto);
+  create(
+    @Body() data: CreateCategoryDto,
+    @User() user
+  ) {
+    return this.categoryService.create(data, user);
   }
 
   @Get()
@@ -25,12 +29,12 @@ export class CategoryController {
   }
 
   @Patch(':id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() updateCategoryDto: UpdateCategoryDto) {
-    return this.categoryService.update(id, updateCategoryDto);
+  update(@Param('id', ParseIntPipe) id: number, @Body() data: UpdateCategoryDto, @User() user) {
+    return this.categoryService.update(id, data, user);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.categoryService.softRemove(id);
+  remove(@Param('id', ParseIntPipe) id: number, @User() user) {
+    return this.categoryService.softRemove(id, user);
   }
 }

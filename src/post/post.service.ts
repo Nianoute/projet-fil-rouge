@@ -85,17 +85,23 @@ export class PostService {
       query.andWhere('post.title like :title', { title: '%' + title + '%' });
     }
 
+    console.log(date);
     if (date !== undefined && date !== '') {
+      console.log(date);
       if (date === "asc") {
+        console.log('date');
         query.orderBy('post.createdAt', 'ASC');
-      } else {
+      }
+      if (date === "desc") {
+        console.log('date desc');
         query.orderBy('post.createdAt', 'DESC');
       }
     }
 
 
     const postList = query.getMany();
-    if (like !== undefined && like !== '') {
+    if (like === "like") {
+      console.log('like');
       postList.then((posts) => {
         posts.sort((a, b) => {
           return b.likesPost.length - a.likesPost.length;
@@ -228,7 +234,7 @@ export class PostService {
       throw new NotFoundException(`Le post d'id ${id} n'existe pas.`);
     }
 
-    if (post.author.id !== user.id) {
+    if (post.author.id !== user.id && user.admin === false) {
       throw new NotFoundException(`Vous n'êtes pas l'auteur de ce post.`);
     }
 

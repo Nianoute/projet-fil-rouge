@@ -16,10 +16,8 @@ export class CommentService {
     data.author = user.id;
 
     if (data.parent === undefined) {
-      console.log('parent is undefined');
       console.log(data);
       if (data.name === '' || data.name === null || data.name === undefined) {
-        console.log('name is empty');
         throw new Error('name is required');
       }
     }
