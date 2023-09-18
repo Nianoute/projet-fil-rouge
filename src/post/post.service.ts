@@ -43,10 +43,13 @@ export class PostService {
       }
 
       if (data.promoPrice !== null) {
-        if (data.price <= data.promoPrice) {
-          throw new Error('Le prix promo ne peut pas être supérieur ou égal au prix normal');
+        if (data.price !== 0 && data.price !== null && data.price !== undefined) {
+          if (data.price <= data.promoPrice) {
+            throw new Error('Le prix promo ne peut pas être supérieur ou égal au prix normal');
+          }
         }
       }
+
 
       if (data.promoDuration !== null && data.promoDuration !== '') {
         const date = new Date(data.promoDuration);
@@ -199,8 +202,11 @@ export class PostService {
       }
 
       if (data.promoPrice !== null) {
-        if (data.price <= data.promoPrice) {
-          throw new Error('Le prix promo ne peut pas être supérieur ou égal au prix normal');
+        console.log(data.price);
+        if (data.price !== 0 && data.price !== null && data.price !== undefined) {
+          if (data.price <= data.promoPrice) {
+            throw new Error('Le prix promo ne peut pas être supérieur ou égal au prix normal');
+          }
         }
       }
 
