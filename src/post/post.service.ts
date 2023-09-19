@@ -43,10 +43,13 @@ export class PostService {
       }
 
       if (data.promoPrice !== null) {
-        if (data.price <= data.promoPrice) {
-          throw new Error('Le prix promo ne peut pas être supérieur ou égal au prix normal');
+        if (data.price !== 0 && data.price !== null && data.price !== undefined) {
+          if (data.price <= data.promoPrice) {
+            throw new Error('Le prix promo ne peut pas être supérieur ou égal au prix normal');
+          }
         }
       }
+
 
       if (data.promoDuration !== null && data.promoDuration !== '') {
         const date = new Date(data.promoDuration);
@@ -85,9 +88,7 @@ export class PostService {
       query.andWhere('post.title like :title', { title: '%' + title + '%' });
     }
 
-    console.log(date);
     if (date !== undefined && date !== '') {
-      console.log(date);
       if (date === "asc") {
         console.log('date');
         query.orderBy('post.createdAt', 'ASC');
@@ -101,7 +102,6 @@ export class PostService {
 
     const postList = query.getMany();
     if (like === "like") {
-      console.log('like');
       postList.then((posts) => {
         posts.sort((a, b) => {
           return b.likesPost.length - a.likesPost.length;
@@ -202,8 +202,11 @@ export class PostService {
       }
 
       if (data.promoPrice !== null) {
-        if (data.price <= data.promoPrice) {
-          throw new Error('Le prix promo ne peut pas être supérieur ou égal au prix normal');
+        console.log(data.price);
+        if (data.price !== 0 && data.price !== null && data.price !== undefined) {
+          if (data.price <= data.promoPrice) {
+            throw new Error('Le prix promo ne peut pas être supérieur ou égal au prix normal');
+          }
         }
       }
 
