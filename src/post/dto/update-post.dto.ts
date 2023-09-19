@@ -5,7 +5,7 @@ export class UpdatePostDto {
         price?: number;
         promoPrice?: number;
         place?: string;
-        webSite?: string;
+        website?: string;
         promoDuration?: string;
         imagePost?: string;
 }

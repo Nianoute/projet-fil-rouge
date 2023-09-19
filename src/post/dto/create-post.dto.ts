@@ -6,6 +6,6 @@ export class CreatePostDto {
     price?: number;
     pricePromo: number;
     place?: string;
-    webSite: string;
+    website: string;
     promoDuration?: string;
 }
