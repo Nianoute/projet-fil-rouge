@@ -48,6 +48,6 @@ export class UserEntity extends TimestampEntity {
   @OneToMany(() => CommentEntity, (comment) => comment.author)
   comments: CommentEntity[];
 
-  @ManyToOne(() => LikeEntity, (like) => like.userLikes)
+  @OneToMany(() => LikeEntity, (like) => like.userLikes)
   likesUser: LikeEntity[];
 }

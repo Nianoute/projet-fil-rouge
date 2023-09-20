@@ -22,7 +22,6 @@ export class PostEntity extends TimestampEntity {
 
   @Column({
     nullable: false,
-    unique: true,
   })
   title: string;
 

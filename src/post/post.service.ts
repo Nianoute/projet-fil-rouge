@@ -90,11 +90,9 @@ export class PostService {
 
     if (date !== undefined && date !== '') {
       if (date === "asc") {
-        console.log('date');
         query.orderBy('post.createdAt', 'ASC');
       }
       if (date === "desc") {
-        console.log('date desc');
         query.orderBy('post.createdAt', 'DESC');
       }
     }

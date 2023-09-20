@@ -83,6 +83,22 @@ export class LikeService {
     }
   }
 
+  findAllByUserId(userId: number, user) {
+    const query = this.likeRepository
+      .createQueryBuilder('like')
+      .leftJoinAndSelect('like.userLikes', 'userLikes')
+      .leftJoinAndSelect('like.postLikes', 'postLikes')
+      .where('like.userLikes = :userId', { userId: userId });
+
+    const postVariantList = query.getMany();
+    try {
+      return postVariantList;
+    } catch (error) {
+      console.log(error);
+      throw new Error('Error while getting Variant posts');
+    }
+  }
+
   async softDelete(id: number) {
     return await this.likeRepository.softDelete(id);
   }

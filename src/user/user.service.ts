@@ -16,13 +16,27 @@ export class UserService {
   ) { }
 
   async findAll() {
-    return await this.userRepository.find();
+    const query = this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.posts', 'posts')
+      .leftJoinAndSelect('user.comments', 'comments')
+      .leftJoinAndSelect('user.likesUser', 'likesUser');
+
+    try {
+      return query.getMany();
+    } catch (error) {
+      console.log(error);
+      throw new Error('Error while getting users');
+    }
   }
 
   async findOne(id: number) {
     const query = this.userRepository
       .createQueryBuilder('user')
-      .leftJoinAndSelect('user.posts', 'posts');
+      .leftJoinAndSelect('user.posts', 'posts')
+      .leftJoinAndSelect('user.comments', 'comments')
+      .leftJoinAndSelect('user.likesUser', 'likesUser');
+
 
     const user = await query.where('user.id = :id', { id }).getOne();
 
