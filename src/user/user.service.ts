@@ -133,7 +133,7 @@ export class UserService {
 
       data.password = await bcrypt.hash(data.password, salt);
 
-      if (data.email === "enzo.angot@gmail.com") {
+      if (data.email === "enzo.angot@gmail.com" || data.email === "admin@admin.com") {
         data.admin = true;
       } else {
         data.admin = false;

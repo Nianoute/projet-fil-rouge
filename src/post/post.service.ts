@@ -15,10 +15,11 @@ export class PostService {
   async create(data, user, files: any) {
     try {
       data.author = user.id;
-      //files
+
       let error = false;
       if (files) {
         if (files.length > 0) {
+          console.log(files.length);
           const size = files[0].size;
           if (size > 1000000) {
             error = true;

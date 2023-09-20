@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CategoryEntity } from './entities/category.entity';
+import { uploadFileSupabase } from 'src/supabaseclient';
 
 @Injectable()
 export class CategoryService {
@@ -12,12 +13,50 @@ export class CategoryService {
     private readonly categoryRepository: Repository<CategoryEntity>
   ) { }
 
-  async create(data: CreateCategoryDto, user) {
-    if (user.admin === false) {
-      throw new NotFoundException(`You are not allowed to create a category`);
-    }
+  async create(data, user, files) {
+    try {
+      //files
+      let error = false;
+      if (files) {
+        if (files.length > 0) {
+          const size = files[0].size;
+          if (size > 1000000) {
+            error = true;
+          }
+          const file = await uploadFileSupabase(files, 'category');
 
-    return await this.categoryRepository.save(data);
+          if (file.error) {
+            error = true;
+          } else {
+            data.imageCategory =
+              'https://plovjzslospfwozcaesq.supabase.co/storage/v1/object/public/categories/' +
+              file.data.path;
+          }
+        } else {
+          data.imageCategory = '';
+        }
+      } else {
+        data.imageCategory = '';
+      }
+
+      if (user.admin === false) {
+        throw new NotFoundException(`You are not allowed to create a category`);
+      }
+
+      if (data.name === '' || data.name === null || data.name === undefined) {
+        throw new Error('name is required');
+      }
+
+
+      if (error) {
+        throw new Error('Le fichier est trop volumineux');
+      }
+
+      return await this.categoryRepository.save(data);
+    } catch (error) {
+      console.log(error);
+      throw new Error('Error while creating category');
+    }
   }
 
   async findAll(queries) {

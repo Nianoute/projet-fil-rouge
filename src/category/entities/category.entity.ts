@@ -18,6 +18,11 @@ export class CategoryEntity extends TimestampEntity {
     })
     description: string;
 
+    @Column({
+        nullable: true,
+    })
+    imageCategory: string;
+
     @ManyToMany(() => PostEntity, post => post.categories)
     posts: PostEntity[];
 
