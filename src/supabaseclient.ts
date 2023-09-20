@@ -8,6 +8,7 @@ const supabaseAnonKey = process.env.SUPABASE_ANON_KEY
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export const uploadFileSupabase = async (oneFile, fileFolder: string) => {
+    console.log(oneFile, fileFolder)
     const file = oneFile[0]
     file.originalname = file.originalname.replaceAll(/ /g, '%20')
     const filePath = `public/${Date.now()}-${file.originalname}`

@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { CreateLikeDto } from './dto/create-like.dto';
-import { UpdateLikeDto } from './dto/update-like.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LikeEntity } from './entities/like.entity';
 import { Repository } from 'typeorm';
@@ -13,7 +12,6 @@ export class LikeService {
   ) { }
 
   create(data: CreateLikeDto, user) {
-    console.log('data', data);
     data.userLikes = user.id;
     try {
       return this.likeRepository.save(data);
@@ -77,6 +75,22 @@ export class LikeService {
     const like = query.getOne();
     try {
       return like;
+    } catch (error) {
+      console.log(error);
+      throw new Error('Error while getting Variant posts');
+    }
+  }
+
+  findAllByUserId(userId: number, user) {
+    const query = this.likeRepository
+      .createQueryBuilder('like')
+      .leftJoinAndSelect('like.userLikes', 'userLikes')
+      .leftJoinAndSelect('like.postLikes', 'postLikes')
+      .where('like.userLikes = :userId', { userId: userId });
+
+    const postVariantList = query.getMany();
+    try {
+      return postVariantList;
     } catch (error) {
       console.log(error);
       throw new Error('Error while getting Variant posts');

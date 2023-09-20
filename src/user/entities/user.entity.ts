@@ -1,6 +1,7 @@
 import { TimestampEntity } from 'src/Generic/timestamp.entity';
 import { CommentEntity } from 'src/comment/entities/comment.entity';
 import { LikeEntity } from 'src/like/entities/like.entity';
+import { LikeCategoryEntity } from 'src/likeCategory/entities/likeCategory.entity';
 import { PostEntity } from 'src/post/entities/post.entity';
 import {
   Entity,
@@ -48,6 +49,9 @@ export class UserEntity extends TimestampEntity {
   @OneToMany(() => CommentEntity, (comment) => comment.author)
   comments: CommentEntity[];
 
-  @ManyToOne(() => LikeEntity, (like) => like.userLikes)
+  @OneToMany(() => LikeEntity, (like) => like.userLikes)
   likesUser: LikeEntity[];
+
+  @OneToMany(() => LikeCategoryEntity, (likeCategory) => likeCategory.userCategoryLikes)
+  likesCategoryUser: LikeCategoryEntity[];
 }

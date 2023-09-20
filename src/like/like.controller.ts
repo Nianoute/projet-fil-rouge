@@ -15,7 +15,7 @@ import { User } from 'src/decorator/decorator.controller';
 
 @Controller('likes')
 export class LikeController {
-  constructor(private readonly likeService: LikeService) {}
+  constructor(private readonly likeService: LikeService) { }
 
   @Post()
   create(@Body() data: CreateLikeDto, @User() user) {
@@ -43,6 +43,11 @@ export class LikeController {
     @User() user,
   ) {
     return this.likeService.findOneLikePostByUserId(postId, user);
+  }
+
+  @Get('user/:userId')
+  findAllByUserId(@Param('userId', ParseIntPipe) userId: number, @User() user) {
+    return this.likeService.findAllByUserId(userId, user);
   }
 
   @Delete(':id')

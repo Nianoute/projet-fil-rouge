@@ -15,10 +15,11 @@ export class PostService {
   async create(data, user, files: any) {
     try {
       data.author = user.id;
-      //files
+
       let error = false;
       if (files) {
         if (files.length > 0) {
+          console.log(files.length);
           const size = files[0].size;
           if (size > 1000000) {
             error = true;
@@ -90,11 +91,9 @@ export class PostService {
 
     if (date !== undefined && date !== '') {
       if (date === "asc") {
-        console.log('date');
         query.orderBy('post.createdAt', 'ASC');
       }
       if (date === "desc") {
-        console.log('date desc');
         query.orderBy('post.createdAt', 'DESC');
       }
     }

@@ -16,13 +16,28 @@ export class UserService {
   ) { }
 
   async findAll() {
-    return await this.userRepository.find();
+    const query = this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.posts', 'posts')
+      .leftJoinAndSelect('user.comments', 'comments')
+      .leftJoinAndSelect('user.likesUser', 'likesUser');
+
+    try {
+      return query.getMany();
+    } catch (error) {
+      console.log(error);
+      throw new Error('Error while getting users');
+    }
   }
 
   async findOne(id: number) {
     const query = this.userRepository
       .createQueryBuilder('user')
-      .leftJoinAndSelect('user.posts', 'posts');
+      .leftJoinAndSelect('user.posts', 'posts')
+      .leftJoinAndSelect('user.comments', 'comments')
+      .leftJoinAndSelect('user.likesUser', 'likesUser')
+      .leftJoinAndSelect('user.likesCategoryUser', 'likesCategoryUser')
+
 
     const user = await query.where('user.id = :id', { id }).getOne();
 
@@ -119,7 +134,7 @@ export class UserService {
 
       data.password = await bcrypt.hash(data.password, salt);
 
-      if (data.email === "enzo.angot@gmail.com") {
+      if (data.email === "enzo.angot@gmail.com" || data.email === "admin@admin.com") {
         data.admin = true;
       } else {
         data.admin = false;
