@@ -35,7 +35,8 @@ export class UserService {
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.posts', 'posts')
       .leftJoinAndSelect('user.comments', 'comments')
-      .leftJoinAndSelect('user.likesUser', 'likesUser');
+      .leftJoinAndSelect('user.likesUser', 'likesUser')
+      .leftJoinAndSelect('user.likesCategoryUser', 'likesCategoryUser')
 
 
     const user = await query.where('user.id = :id', { id }).getOne();

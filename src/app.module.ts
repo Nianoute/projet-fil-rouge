@@ -13,6 +13,7 @@ import { ShopModule } from './shop/shop.module';
 import { CommentModule } from './comment/comment.module';
 import { PostVariantModule } from './post-variant/post-variant.module';
 import { LikeModule } from './like/like.module';
+import { LikeCategoryModule } from './likeCategory/likeCategory.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -36,9 +37,10 @@ import { LikeModule } from './like/like.module';
     ShopModule,
     CommentModule,
     PostVariantModule,
-    LikeModule
+    LikeModule,
+    LikeCategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

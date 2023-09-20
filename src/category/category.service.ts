@@ -29,7 +29,7 @@ export class CategoryService {
             error = true;
           } else {
             data.imageCategory =
-              'https://plovjzslospfwozcaesq.supabase.co/storage/v1/object/public/categories/' +
+              'https://plovjzslospfwozcaesq.supabase.co/storage/v1/object/public/category/' +
               file.data.path;
           }
         } else {
@@ -89,9 +89,13 @@ export class CategoryService {
       .where('category.id = :id', { id })
       .leftJoinAndSelect('category.parent', 'parent')
       .leftJoinAndSelect('category.children', 'children')
+      .leftJoinAndSelect('category.posts', 'posts')
+      .leftJoinAndSelect('posts.author', 'author')
+      .leftJoinAndSelect('posts.comments', 'comments')
+      .leftJoinAndSelect('posts.likesPost', 'likesPost')
 
     const categoriesList = query
-      .getMany();
+      .getOne();
 
     try {
       return await categoriesList;

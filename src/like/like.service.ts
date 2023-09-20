@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { CreateLikeDto } from './dto/create-like.dto';
-import { UpdateLikeDto } from './dto/update-like.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LikeEntity } from './entities/like.entity';
 import { Repository } from 'typeorm';
@@ -13,7 +12,6 @@ export class LikeService {
   ) { }
 
   create(data: CreateLikeDto, user) {
-    console.log('data', data);
     data.userLikes = user.id;
     try {
       return this.likeRepository.save(data);
